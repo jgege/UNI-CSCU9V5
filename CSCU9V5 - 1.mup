@@ -1,0 +1,442 @@
+{
+  "formatVersion": 3,
+  "id": "root",
+  "ideas": {
+    "1": {
+      "title": "Concurrent & Distributed Systems",
+      "id": 1,
+      "attr": {
+        "position": [
+          -79,
+          -24,
+          1
+        ]
+      },
+      "ideas": {
+        "1": {
+          "title": "Concurrent",
+          "id": "2.af84.6f5e73808-ebaf.2a4a443d7",
+          "ideas": {
+            "1": {
+              "title": "Inherently",
+              "id": "3.af84.6f5e73808-ebaf.2a4a443d7",
+              "ideas": {
+                "1": {
+                  "title": "real-time systems",
+                  "id": "4.af84.6f5e73808-ebaf.2a4a443d7",
+                  "ideas": {
+                    "1": {
+                      "title": "timing constraints",
+                      "id": "19.af84.6f5e73808-ebaf.2a4a443d7",
+                      "attr": {
+                        "style": {
+                          "background": "#800080"
+                        }
+                      }
+                    },
+                    "2": {
+                      "title": "respond within certain time",
+                      "id": "20.af84.6f5e73808-ebaf.2a4a443d7",
+                      "attr": {
+                        "style": {
+                          "background": "#800080"
+                        }
+                      }
+                    }
+                  },
+                  "attr": {
+                    "style": {
+                      "background": "#800080"
+                    }
+                  }
+                },
+                "2": {
+                  "title": "operating systems",
+                  "id": "7.af84.6f5e73808-ebaf.2a4a443d7",
+                  "ideas": {
+                    "1": {
+                      "title": "preemptive and non-preemptive scheduling",
+                      "id": "29.af84.6f5e73808-ebaf.2a4a443d7",
+                      "attr": {
+                        "style": {
+                          "background": "#800080"
+                        }
+                      }
+                    },
+                    "2": {
+                      "title": "distributed operanting systems",
+                      "id": "30.af84.6f5e73808-ebaf.2a4a443d7",
+                      "attr": {
+                        "style": {
+                          "background": "#800080"
+                        }
+                      }
+                    }
+                  },
+                  "attr": {
+                    "style": {
+                      "background": "#800080"
+                    }
+                  }
+                }
+              },
+              "attr": {
+                "style": {
+                  "background": "#800080"
+                }
+              }
+            },
+            "2": {
+              "title": "Potentially",
+              "id": "8.af84.6f5e73808-ebaf.2a4a443d7",
+              "ideas": {
+                "6": {
+                  "title": "attributes",
+                  "id": "39.af84.6f5e73808-ebaf.2a4a443d7",
+                  "ideas": {
+                    "1": {
+                      "title": "big data",
+                      "id": "14.af84.6f5e73808-ebaf.2a4a443d7",
+                      "attr": {
+                        "style": {
+                          "background": "#FF6600"
+                        }
+                      }
+                    },
+                    "2": {
+                      "title": "parallel applications",
+                      "id": "13.af84.6f5e73808-ebaf.2a4a443d7",
+                      "attr": {
+                        "style": {
+                          "background": "#FF6600"
+                        }
+                      }
+                    },
+                    "3": {
+                      "title": "real time",
+                      "id": "12.af84.6f5e73808-ebaf.2a4a443d7",
+                      "attr": {
+                        "style": {
+                          "background": "#FF6600"
+                        }
+                      }
+                    },
+                    "4": {
+                      "title": "lot of data",
+                      "id": "10.af84.6f5e73808-ebaf.2a4a443d7",
+                      "attr": {
+                        "style": {
+                          "background": "#FF6600"
+                        }
+                      }
+                    },
+                    "5": {
+                      "title": "a lot computing",
+                      "id": "9.af84.6f5e73808-ebaf.2a4a443d7",
+                      "attr": {
+                        "style": {
+                          "background": "#FF6600"
+                        }
+                      },
+                      "ideas": {}
+                    }
+                  },
+                  "attr": {
+                    "style": {
+                      "background": "#FF6600"
+                    }
+                  }
+                },
+                "7": {
+                  "title": "models",
+                  "id": "41.af84.6f5e73808-ebaf.2a4a443d7",
+                  "ideas": {
+                    "1": {
+                      "title": "SIMD (partition data, replicate code)",
+                      "id": "42.af84.6f5e73808-ebaf.2a4a443d7",
+                      "ideas": {},
+                      "attr": {
+                        "style": {
+                          "background": "#FF6600"
+                        }
+                      }
+                    },
+                    "2": {
+                      "title": "MIMD (different code, different data)",
+                      "id": "44.af84.6f5e73808-ebaf.2a4a443d7",
+                      "attr": {
+                        "style": {
+                          "background": "#FF6600"
+                        }
+                      }
+                    },
+                    "3": {
+                      "title": "pipeline",
+                      "id": "45.af84.6f5e73808-ebaf.2a4a443d7",
+                      "attr": {
+                        "style": {
+                          "background": "#FF6600"
+                        }
+                      }
+                    }
+                  },
+                  "attr": {
+                    "style": {
+                      "background": "#FF6600"
+                    }
+                  }
+                }
+              },
+              "attr": {
+                "style": {
+                  "background": "#FF6600"
+                }
+              }
+            }
+          },
+          "attr": {
+            "style": {
+              "background": "#00FFFF"
+            }
+          }
+        },
+        "-1": {
+          "title": "examples",
+          "id": "15.af84.6f5e73808-ebaf.2a4a443d7",
+          "ideas": {
+            "3": {
+              "title": "inherently",
+              "id": "31.af84.6f5e73808-ebaf.2a4a443d7",
+              "ideas": {
+                "1": {
+                  "title": "operating systems",
+                  "id": "23.af84.6f5e73808-ebaf.2a4a443d7",
+                  "ideas": {
+                    "1": {
+                      "title": "single & multi-user",
+                      "id": "24.af84.6f5e73808-ebaf.2a4a443d7",
+                      "attr": {
+                        "style": {
+                          "background": "#800080"
+                        }
+                      }
+                    },
+                    "2": {
+                      "title": "slow devices",
+                      "id": "25.af84.6f5e73808-ebaf.2a4a443d7",
+                      "attr": {
+                        "style": {
+                          "background": "#800080"
+                        }
+                      }
+                    },
+                    "3": {
+                      "title": "parallel tasks",
+                      "id": "26.af84.6f5e73808-ebaf.2a4a443d7",
+                      "attr": {
+                        "style": {
+                          "background": "#800080"
+                        }
+                      }
+                    }
+                  },
+                  "attr": {
+                    "style": {
+                      "background": "#800080"
+                    }
+                  }
+                },
+                "2": {
+                  "title": "real-time",
+                  "id": "16.af84.6f5e73808-ebaf.2a4a443d7",
+                  "ideas": {
+                    "1": {
+                      "title": "aircraft systems",
+                      "id": "21.af84.6f5e73808-ebaf.2a4a443d7",
+                      "attr": {
+                        "style": {
+                          "background": "#800080"
+                        }
+                      }
+                    },
+                    "2": {
+                      "title": "hospital patient monitoring",
+                      "id": "22.af84.6f5e73808-ebaf.2a4a443d7",
+                      "attr": {
+                        "style": {
+                          "background": "#800080"
+                        }
+                      }
+                    }
+                  },
+                  "attr": {
+                    "style": {
+                      "background": "#800080"
+                    }
+                  }
+                }
+              },
+              "attr": {
+                "style": {
+                  "background": "#800080"
+                }
+              }
+            },
+            "4": {
+              "title": "potentially",
+              "id": "32.af84.6f5e73808-ebaf.2a4a443d7",
+              "ideas": {
+                "1": {
+                  "title": "benefit from concurrency",
+                  "id": "34.af84.6f5e73808-ebaf.2a4a443d7",
+                  "attr": {
+                    "style": {
+                      "background": "#FF6600"
+                    }
+                  }
+                },
+                "2": {
+                  "title": "cooking recipe",
+                  "id": "35.af84.6f5e73808-ebaf.2a4a443d7",
+                  "ideas": {},
+                  "attr": {
+                    "style": {
+                      "background": "#FF6600"
+                    }
+                  }
+                }
+              },
+              "attr": {
+                "style": {
+                  "background": "#FF6600"
+                }
+              }
+            }
+          },
+          "attr": {
+            "style": {
+              "background": "#99CC00"
+            },
+            "position": [
+              183,
+              -93,
+              1
+            ]
+          }
+        },
+        "-11": {
+          "title": "Distributed",
+          "id": "46.af84.6f5e73808-ebaf.2a4a443d7",
+          "ideas": {
+            "1": {
+              "title": "benefits",
+              "id": "47.af84.6f5e73808-ebaf.2a4a443d7",
+              "ideas": {
+                "1": {
+                  "title": "economics",
+                  "id": "49.af84.6f5e73808-ebaf.2a4a443d7",
+                  "attr": {
+                    "style": {
+                      "background": "#00FF00"
+                    }
+                  }
+                },
+                "2": {
+                  "title": "flexibility",
+                  "id": "50.af84.6f5e73808-ebaf.2a4a443d7",
+                  "attr": {
+                    "style": {
+                      "background": "#00FF00"
+                    }
+                  }
+                },
+                "3": {
+                  "title": "reliability",
+                  "id": "51.af84.6f5e73808-ebaf.2a4a443d7",
+                  "attr": {
+                    "style": {
+                      "background": "#00FF00"
+                    }
+                  }
+                },
+                "4": {
+                  "title": "speed",
+                  "id": "52.af84.6f5e73808-ebaf.2a4a443d7",
+                  "attr": {
+                    "style": {
+                      "background": "#00FF00"
+                    }
+                  }
+                }
+              },
+              "attr": {
+                "style": {
+                  "background": "#00FF00"
+                }
+              }
+            },
+            "2": {
+              "title": "challenges",
+              "id": "48.af84.6f5e73808-ebaf.2a4a443d7",
+              "ideas": {
+                "1": {
+                  "title": "inconsistent state",
+                  "id": "53.af84.6f5e73808-ebaf.2a4a443d7",
+                  "attr": {
+                    "style": {
+                      "background": "#FFFF00"
+                    }
+                  }
+                },
+                "2": {
+                  "title": "no global time",
+                  "id": "54.af84.6f5e73808-ebaf.2a4a443d7",
+                  "attr": {
+                    "style": {
+                      "background": "#FFFF00"
+                    }
+                  }
+                },
+                "3": {
+                  "title": "communication delay",
+                  "id": "55.af84.6f5e73808-ebaf.2a4a443d7",
+                  "attr": {
+                    "style": {
+                      "background": "#FFFF00"
+                    }
+                  }
+                },
+                "4": {
+                  "title": "expensive software",
+                  "id": "56.af84.6f5e73808-ebaf.2a4a443d7",
+                  "attr": {
+                    "style": {
+                      "background": "#FFFF00"
+                    }
+                  }
+                }
+              },
+              "attr": {
+                "style": {
+                  "background": "#FFFF00"
+                }
+              }
+            }
+          },
+          "attr": {
+            "style": {
+              "background": "#FF0000"
+            },
+            "position": [
+              187,
+              203,
+              2
+            ]
+          }
+        }
+      }
+    }
+  },
+  "title": "Concurrent & Distributed Systems",
+  "links": []
+}
