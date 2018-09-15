@@ -2,7 +2,7 @@
 
 ## Mindmap
 
-![](cscu9v5_1.png)
+![](images/cscu9v5_1.png)
 
 # Concurrent system classifications & examples
 
@@ -43,10 +43,10 @@
       - ingredients for the next step need to be ready
   - Concurrency solutions (various models)
     - partition data, replicate code (SIMD)
-      - ![](/mnt/jgdata/school/uni_bsc/CSCU9V5/notes/simd.png)
+      - ![](images/simd.png)
     - different code on different data (MIMD)
     - pipeline
-      - ![](/mnt/jgdata/school/uni_bsc/CSCU9V5/notes/pipeline.png)
+      - ![](images/pipeline.png)
 
 
 
@@ -106,7 +106,7 @@
 
 - A process is an entity executing the range of actions, which are specified by the program. Its thread of execution is somewhere in the middle between the first and the last of the actions specified by the program (active entity)
 
-  ![](/mnt/jgdata/school/uni_bsc/CSCU9V5/notes/processes_1.png)
+  ![](images/processes_1.png)
 
 ### Life cycle of a process
 
@@ -129,7 +129,7 @@
 
 - Efficient usage of CPU:
 
-  - ![](/mnt/jgdata/school/uni_bsc/CSCU9V5/notes/cpu_usage.png)
+  - ![](images/cpu_usage.png)
 
 #### Process states
 
@@ -145,7 +145,7 @@
 
 #### Lifecycle
 
-![](/mnt/jgdata/school/uni_bsc/CSCU9V5/notes/process_states.png)
+![](images/process_states.png)
 
 - **new** process is created and put in the **ready** queue
 - then the use of the CPU is assigned to a ready process, which becomes **running**
@@ -156,11 +156,11 @@
 
 ### Parts of a process
 
-![](/mnt/jgdata/school/uni_bsc/CSCU9V5/notes/process_structure.png)
+![](images/process_structure.png)
 
 ### Context switch
 
-![](/mnt/jgdata/school/uni_bsc/CSCU9V5/notes/context_switching.png)
+![](images/context_switching.png)
 
 - when CPU switches to another process, the system must save the state of the old process and load the saved state for the new process
 - context-swtich time is overhead; the system does no useful work while switching
@@ -237,7 +237,7 @@
   - At a time
     - slots 0-3 are empty (files printed)
     - slots 4-6 are full (files to be printed)
-  - ![](/mnt/jgdata/school/uni_bsc/CSCU9V5/notes/race_condition_example.png)
+  - ![](images/race_condition_example.png)
   - Almost simultaneously processes A and B want to print
   - Processes A reads in (value 7) and assigns it to a local variable
   - Processs context switch occurs to process B
