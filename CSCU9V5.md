@@ -1,58 +1,64 @@
 # CSCU9V5 - Concurrent & Distributed Systems
 
+[TOC]
+
+# Concurrent system classifications & examples
+
 ## Mindmap
 
 ![](images/cscu9v5_1.png)
 
-# Concurrent system classifications & examples
-
-- Inherently concurrent systems
-
-  - real-time systems
-    - timing constraints dictated by the environtment of a system
-    - system has to respond to external events within a certain time
-    - Software monitors & controls aspects of the environment of the system
-    - Examples:
-
-      - aircraft systems
-      - hospital patient monitoring
-
-  - operating systems
-    - Single user and multi-user systems
-    - Devices are slow compared to the main processor
-      - OS attends to the devices when necessary
-      - Other tasks are performed while devices are busy
-    - User want to carry out a number of tasks in parallel (lengthy computation + reading e-mail)
-    - Running programs of different users in parallel
-    - Preemtive and non-premtive scheduling
-    - Distributed operating systems
-
-- Potentially concurrent systems
-
-  - benefits from concurrency
-  - Used for:
-    - large amount of computing (graphics)
-    - large amount of data to be processed (simulations)
-    - Real-time requirement for the result (voice processing)
-    - Hardware is available to run applications in parallel
-    - Big data problems
-  - Examples
-    - eg cooking recipe
-      - can be executed  sequentially
-      - some steps can be carried out simultaneously
-      - ingredients for the next step need to be ready
-  - Concurrency solutions (various models)
-    - partition data, replicate code (SIMD)
-      - ![](images/simd.png)
-    - different code on different data (MIMD)
-    - pipeline
-      - ![](images/pipeline.png)
 
 
+## Inherently concurrent systems
 
-# Distrubited systems
+### Real-time systems
 
-## Benefits
+- timing constraints dictated by the environtment of a system
+- system has to respond to external events within a certain time
+- Software monitors & controls aspects of the environment of the system
+- Examples:
+
+  - aircraft systems
+  - hospital patient monitoring
+
+### Operating systems
+
+- Single user and multi-user systems
+- Devices are slow compared to the main processor
+  - OS attends to the devices when necessary
+  - Other tasks are performed while devices are busy
+- User want to carry out a number of tasks in parallel (lengthy computation + reading e-mail)
+- Running programs of different users in parallel
+- Preemtive and non-premtive scheduling
+- Distributed operating systems
+
+## Potentially concurrent systems
+
+- benefits from concurrency
+- Used for:
+  - large amount of computing (graphics)
+  - large amount of data to be processed (simulations)
+  - Real-time requirement for the result (voice processing)
+  - Hardware is available to run applications in parallel
+  - Big data problems
+- Examples
+  - eg cooking recipe
+    - can be executed  sequentially
+    - some steps can be carried out simultaneously
+    - ingredients for the next step need to be ready
+- Concurrency solutions (various models)
+  - partition data, replicate code (SIMD)
+    - ![](images/simd.png)
+  - different code on different data (MIMD)
+  - pipeline
+    - ![](images/pipeline.png)
+
+
+
+## Distrubited systems
+
+### Benefits
 
 |      |      |
 | ---- | ---- |
@@ -62,7 +68,7 @@
 | Reliability           | Flexibility    |
 | Incremental Growth    | Transparency   |
 
-## Challenges
+### Challenges
 
 |      |      |
 | ---- | ---- |
@@ -255,5 +261,467 @@
 - Processes cooperate (communicate)
 - Race conditions
 
+# Threads
+
+## Overview
+
+- so far implied that a process has ONE thread of execution
+
+- Many OS have exnteded the process model to allow processes to have more than one thread of execution
+
+- **Process scheduling** and context switching is heavyweight
+
+- **Thread scheduling** and switching is lightweight
+
+  ![](/mnt/jgdata/school/uni_bsc/CSCU9V5/notes/images/threads.png)
+
+- Basic unit of CPU utilisation
+
+- Comprises
+
+  - thread ID
+  - program counter
+  - register set
+  - stack
+
+- Shares
+
+  - code section
+  - data section
+  - open files, signals
+
+- Problems with processes
+
+  - many software applications are implemented in a single process with multiple threads of execution
+  - Text processing
+    - display graphics
+    - get keystrokes from the user
+    - perform spell checking
+  - Web browsing
+    - Display text/images
+    - Retrive data from network
+  - Web server
+    - Single process - long wait for some requests
+    - Create a process per request - enormous overhead
+    - Create a thread per request
+
+## Benefits
+
+- **Responsiveness** - an application continues running even if part of it is blocked or performing a lengthy operation
+- **Resource sharing** - threads share memory and resources of the process they belong to
+- **Economy** - allocating memory and resources to processes is costly. Creating a switching between threads is more cost effective as overhead is smaller
+- **Utilisation of multiprocesssor architectures** -  each thread may run on a different processor. In a single processor environment, the context switching allows pseudo parallelism
+
+## Thread implementation
+
+- Threads may be provided by a user library
+  - Posix threads, Mach C-threads
+  - Library supports creating, scheduling and management
+  - OS kernel is unaware of user threads
+  - Threads are fast to create and manage
+  - But, if a thread performs a blocking system call => all threads are blocked
+- Threads may be provided by the OS kernel
+  - Windows NT, Solaris, Digital Unix
+  - Generally slower to create and manage than user threads
+  - Concurrent threads may proceed during a blocking system call
+  - Kernel can schedule threads to run on different processors on a multiprocessor
+
+## Multithreading models
+
+- Systems provide for kernel and user threads
+- different multithreading models
+
+### Many-to-one model
+
+![](/mnt/jgdata/school/uni_bsc/CSCU9V5/notes/images/thread_model_many_to_one.png)
+
+- many user-level threads mapped to single kernel thread
+- used on systems that do not support kernel threads
+
+### One-to-one model
+
+![](/mnt/jgdata/school/uni_bsc/CSCU9V5/notes/images/thread_model_one_to_one.png)
+
+- each user-level thread maps to kernel thread
+- creating a user thread requires creating a kernel thread
+- examples:
+  - Windows NT
+  - OS/2
+
+### Many-to-many model
+
+![](/mnt/jgdata/school/uni_bsc/CSCU9V5/notes/images/thread_model_many_to_many.png)
+
+- multiplexes many user-level threads to fewer or equal kernel threads
+- examples:
+  - solaris
+  - irix
+  - digital unix
+
+## Threads in Java
+
+### A Java thread
+
+```java
+class Worker1 extends Thread
+{
+	public void run() {
+		System.out.println("I am a Worker Thread");
+	}
+}
+```
+
+- Extend the *Thread*
+- Overwrite the *run()* method
+
+### Initialising a thread
+```java
+public class First
+{
+    public static void main(String args[]) {
+        Worker runner = new Worker1();
+        runner.start();
+        System.out.println("I am the main thread");
+    }
+}
+```
+- A thread is created by calling *start()*
+  - memory is allocated
+  - a new thread within the JVM is initialised
+  - *run()* of the object  is called
+- do not call *run()* yourself
+- two threads are created: the application thread and the runner thread
+
+### The runnable interface
+```java
+public interface Runnable
+{
+	public abstract void run();
+}
+```
+
+- A thread can also be created by implementing the *Runnable interface*
+- define the *run()* method
+- Thread class also implements runnable, thus *run()* needs to be defined
+
+### Initialising the runnable thread
+```java
+class Worker2 implements Runnable
+{
+    public void run() {
+    	System.out.println(“I am a Worker Thread”);
+    }
+}
+```
+- Similar to extending the *Thread* class
+- Initialising the new thread is slightly different to extending *Thread*
+- No access to static or instance methods (such as *start()*) of Thread
+- However, *start()* is needed
+
+### Creating a thread
+```java
+public class Second
+{
+    public static void main(String args[]) {
+        Runnable runner = new Worker2();
+        Thread thrd = new Thread(runner);
+        thrd.start();
+        System.out.println(“I am the main thread”);
+    }
+}
+```
+- A new Thread object is created and the Runnable object is passed as parameter to its constructor
+- Thread is created calling start()
+- Execution begins in the run() method of Runnable object
+
+- another example:
+```java
+public class OurApplet extends Applet implements Runnable {
+    public void init() {
+        Thread th = new Thread(this);
+        th.start();
+    }
+    public void run() {
+    	System.out.println(“I am a Worker Thread”);
+    }
+}
+```
+
+### Managing Java Threads
+
+- **suspend()** - suspends execution of the currently running thread
+  - applet (running seperate thread) displaying some graphics is not visible -> suspend the thread
+- **sleep()** - puts the currently running thread to sleep for a specified amount of time
+- **resume()** - resumes execution of a suspended thread
+  - Applet is visible again -> resume the thread and processing
+- **stop()** - stops execution of a thread
+  - Thread cannot be resumed
+
+### Thread states
+
+![](/mnt/jgdata/school/uni_bsc/CSCU9V5/notes/images/thread_states.png)
+
+### Producer-consumer problem
+
+#### Server
+```java
+public class Server {
+    public Server() {
+        MessageQueue mailBox = new MessageQueue();
+        Producer producerThread = new Producer(mailBox);
+        Consumer consumerThread = new Consumer(mailBox);
+        producerThread.start();
+        consumerThread.start();
+    }
+    public static void main(String args[]) {
+    	Server server = new Server();
+    }
+}
+```
+
+#### Producer
+```java
+class Producer extends Thread {
+    public Producer(MessageQueue m) {
+    	mbox = m;
+    }
+    public void run() {
+        while (true) {
+        	// produce an item & enter it into the buffer
+        	Date message = new Date();
+        	mbox.send(message);
+        }
+    }
+    private MessageQueue mbox;
+}
+```
+
+#### Consumer
+```java
+class Consumer extends Thread {
+    public Consumer(MessageQueue m) {
+    	mbox = m;
+    }
+    public void run() {
+        while (true) {
+            Date message = (Date)mbox.receive();
+            if (message != null)
+            // consume the message
+        }
+    }
+    private MessageQueue mbox;
+}
+```
+
+## Summary
+
+- Threads are lightweight processes
+- Allow for more efficient use of resources
+- User and kernel threads - mappings
+- Threads in Java language
+  - extend the thread class
+  - implement the runnable interface
+- Threads can change states like processes
+
+# Running in parallel - concurrency
+
+## Example
+
+![](/mnt/jgdata/school/uni_bsc/CSCU9V5/notes/images/concurrency_example_1.png)
+
+## Process interactions
+
+### General classification
+
+#### One to one![](/mnt/jgdata/school/uni_bsc/CSCU9V5/notes/images/interaction_c_one_to_one.png)
+
+- Appropiate in systems with static configurations of interactions between individual processes
+- Example:
+  - pipline in unix commands
+
+#### Any to one ![](/mnt/jgdata/school/uni_bsc/CSCU9V5/notes/images/interaction_c_many_to_one.png)
+
+- Multple clients interact with a single server
+- Clients invoke a well known server
+- Server accepts requests from any client
+- Server does not know which client will interact next, waits for the next client
+- Example:
+  - Mail server + client
+  - Web server + client
+
+#### Any to (one of) many ![](/mnt/jgdata/school/uni_bsc/CSCU9V5/notes/images/interaction_c_many_to_one.png)
+
+- Service offered by anonymous server processes
+- Clients requests service from any available server
+- This style usually reduces to one of the other styles
+
+#### One to (one of) many ![](/mnt/jgdata/school/uni_bsc/CSCU9V5/notes/images/interaction_c_one_to_many.png)
+
+- User to notify a set of interested clients
+- Broadcast (sent out to everyone)
+  - Usually no record of reception of communication
+  - Clients liseten for information
+- Multicast (sent out to a specific set of recipients)
+  - How to identify the recipients (clients join a list - mailing list)
+  - Reliable, unreliable (like broadcast)
+  - Used in fault tolerant systems
 
 
+#### Many to many ![](/mnt/jgdata/school/uni_bsc/CSCU9V5/notes/images/interaction_c_many_to_many.png)
+
+- Usually implemented by shared data
+- Any number of processes can interact
+- Requires synchronisation to prevent chaos
+
+### Forms of process interactions
+
+- Co-operation (shared memory) ![](/mnt/jgdata/school/uni_bsc/CSCU9V5/notes/images/ipc_coop_shared_memory.png)
+- Communication (message passing) ![](/mnt/jgdata/school/uni_bsc/CSCU9V5/notes/images/ipc_comm_message_passing.png)
+
+#### Implementing IPC
+
+- Shared memory
+  - Processes/threads involved share a common buffer pool
+  - Buffer can be explicitly implemented by programmer
+- Inter-Process Communication (IPC) without shared memory:
+  - IPC has at least two operations
+    - send (message)
+    - receive (message)
+  - messages can be either fixed or variable size
+  - A link between the involved processes must exist
+- Physical implementation
+  - shared memory
+  - hardware bus
+  - network
+- Logical implementation of **link**, **send()**, **receive()**:
+  - direct or indirect communication
+    - naming; processes need to have a way to indentify each other
+  - Synchronisation: blocking or non-blocking send/receive
+  - Automatic or explicit buffering
+  - send by copy or send by reference
+  - fixed-sized or variable-sized messages
+
+#### Logical implementation
+
+##### Direct communication
+
+- processes need to explicitly name the receptionist / sender (synchronous adressing)
+  - send(P, message)
+  - receive(Q, message)
+- Link is established automatically between the two parties; processes only need to know each other
+- A link is established between exactly two processes
+- Between each pair of processes there exists exactly one link
+- Also asynchronous addressing possible
+  - send(P, message) - send a message to process P
+  - receive(id, message) - receive a message from any process; id holds the name of the processes with which communication took place
+- Disadvantage: limited modularity (changing code)
+
+##### Indirect communication
+
+- Messages are send to **mailboxes** or **ports**
+- Mailbox is an abstract concept
+  - object into which messages can be included and removed
+  - each mailbox has its unique identification
+- Processes can communicate with other processes via different mailboxes
+- Communcating processes need to have shared mailboxes
+  - send(A, message) - send a message to mailbox A
+  - receive(A, message) - receive a message from mailbox A
+- A link is only established if the processes share a mailbox
+- A link may be established between more than two processes
+- Between a pair of processes there may be any number of links represented by different mailboxes
+- How are messages linked to processes:
+  - allow only links between two processes
+  - allow at most one process at a time to execute receive()
+  - allow the system to select which process will receive the message; the system may identify the receiver to the sender
+- Mailboxes may be owned by
+  - a user process
+    - owner process may only receive messages
+    - other processes (users) may only send messages
+    - when the owner dies, the mailbox disappears too
+    - users need to be notified of the disappearance of the mailbox
+  - the operating system
+    - independent, not associated with any process
+    - operating system offers machanisms for
+      - creating a new mailbox
+      - send and receive messages
+      - delete a mailbox
+
+##### Synchronisation
+
+- Message passing may be blocking or non-blocking (synchronous and asynchronous)
+- Send
+  - **Blocking** - sending process is blocked until the message has be received by the receiving process or mailbox
+  - **Non-blocking** - sending process resumes operation immediately after sending the message
+- Receive
+  - **Blocking** - the receiving process blocks until a message has been received
+  - **Non-blocking** - the receiver retrieves a valid message or a NULL message
+
+##### Buffering
+
+- Messages exchanged always reside in a temporary queue
+- Zero capacity
+  - maximum length 0 -> no messages can 'wait' in the queue
+  - sender must block until the receiver gets the message
+  - also called a message passing system without a buffering
+- Bounded capacity
+  - finite length n -> the queue can hold at most n messages
+  - queue not full: message is stored in the queue (either a copy or a ref); sender can continue execution without waiting
+  - queue full: sender blocks until space is available
+- Unbounded capacity
+  - potentially infinite length
+  - sender never blocks
+
+- Example - Message queue
+```java
+import java.util.*;
+public class MessageQueue
+{
+    public MessageQueue() {
+        queue = new Vector();
+    }
+    public void send(Object item)
+    {
+        queue.addElement(item);
+    }
+    public Object receive() {
+        Object item;
+        if (queue.size() == 0)
+            return null;
+        else {
+            item = queue.firstElement();
+        queue.removeElementAt(0);
+        return item;
+        }
+    }
+    private Vector queue;
+}
+```
+
+- Message queue for producer consumer example from lecture 3
+- Buffer is unbounded and provided by Vector class
+- send() and receive() are non-blocking
+- Consumer need to evaluate the result from receive() - message may be NULL
+
+##### Shared memory
+
+- Useful when:
+  - In an upproteceted system where all processes and OS run in the same address space (MACOS until 7.5)
+  - The language system operates a simple OS (Ada, ML)
+  - In systems where multithreading is provided above the OS (Sun LWT library)
+- Not useful wheh:
+  - In protected systems where processes run in seperate address spaces
+    - protection and addressing are orthogonal
+  - Between processes on different CPUs or machines
+    - However distributed shared memory
+  - In systems where high flexibility is required
+    - distribute process on different machines not possible
+  - In systems where process migration is desirable
+    - migration and shared memory are incompatible
+    - however distributed shared memory
+
+## Summary
+
+- Process communications (1:1, 1:m, ...)
+- Shared memory - direct communication
+- Synchronisation (blocking/non-blocking)
+- Buffers (0, finite, ...)
