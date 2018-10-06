@@ -725,3 +725,267 @@ public class MessageQueue
 - Shared memory - direct communication
 - Synchronisation (blocking/non-blocking)
 - Buffers (0, finite, ...)
+
+# Java synchronisation
+
+## Background
+
+- Cooperating sequential threads/processes run asynchronously and share data
+- Concurrent access to shared data may result in data incosistency
+- Mainting data consistency requires machanisms to ensure the orderly execution of cooperating proceses
+- Illustrate the problem with the bounded buffer problem
+- Shared-memory solution to bounded-buffer problem has a reace condition on the class data **count**
+
+## Bounded buffer problem
+
+![](images/bounded_buffer_code.png)
+
+- Both consumer and producer work well separately, however they may not function in combination
+
+- Variable count is shared
+
+- Assume ++count and --count happen concurrently
+
+- is the result 4,5 or 6 (due to processor operations)?
+
+  ![](images/bounded_buffer_code_2.png)
+
+### Race conditions: the problem
+
+- Shared variables are written to/read from
+- Transfer from one consistent state to another takes several separate opreations
+- Context switch can happen any time and operations be interrupted
+- Concurrent threads (multi-processsor) may share data, this leads to corrupted data
+- Approach: critical section
+
+## Critical sections
+
+- To prevent race conditions -> only one thread at the time manipulates the variable count
+- Synchronisation of threads is required
+- Sections of code are declared critical
+  - changing common variables
+  - updating a shared table
+  - writing to a file
+- Access to critical sections is regulated
+  - if ont thread executes in a critical section no other thread may enter their critical secionts
+  - mutual exclusion in time
+
+## Solving the critical section problem
+
+A solutin must satisfy four requirements
+
+- No two processes may be simultaneously inside their critical secionts
+- No assumptions may be made concerning speeds or numbers of processors
+- No process running outside its critical region may block other processes
+- No process should have to wait forever to enter its critical region (fairness/starvation)
+
+## Possible solutions
+
+![](images/sync_possible_solutions.png)
+
+### Java Syncronisation
+
+- enforcing mutual exclusion between therads -> thread safe
+- alternative to busy waiting
+- solving race conditions
+  - syncronized
+  - wait(), notify(), notifyAll()
+
+### Busy waiting
+
+- Remember bounded buffer problem
+- -> wait until buffer is not empty / not full
+- Alternative: Thread.yield()
+  - Thread stays in runnable state
+  - Allows JVM to select another thread for execution (equal priority) if any
+  - problem: potential deadlock
+
+### Deadlock scenario
+
+- Deadlock (informal): a series of processes/threads is waiting on conditions (resources) depending on the other procceses/threads in the set and no one can run. Permanent condition
+
+Necessary conditions for deadlock:
+
+- Mutual exclusion
+- Hold and wait
+- No preemption
+- Circular wait
+
+
+
+- JVM uses prorities, thread with highest prority of all threads in runnable state is run before threads with lower priority
+- Producer has higher priority than consumer
+  - if buffer is full, producer will execute yield()
+  - consumer still cannoit run because of lower priority
+  - -> deadlock
+
+### Fixing race conditions
+
+- Java introduces keyword synchronized
+- every java  object has an associated lock
+- object associated with bounded buffer class also has a lock associated
+- normally, when a method is invoked, the lock is ignored
+- however, using synchronized requires owning the lock for the object
+
+### Synchronized mechanism
+
+- if the lock is not available (owned by another thread) the thread blocks
+- the blocked thread is put into a queue called *entry set*
+- entry set represents all threads waiting for the lock to become avaiable
+- the lock is released when the owning thread exits a synchronized method
+- one thread from the entry set gets the lock
+
+#### Entry set
+
+![](images/javasync_entry_set.png)
+
+Code example:
+
+```java
+class Example extends Thread
+{
+	public synchronized void enter(Object item) {
+		while (count == BUFFER_SIZE)
+			Thread.yield();
+		++count;
+		buffer[in] = item;
+		in = (in + 1) % BUFFER_SIZE;
+	}
+	
+	public synchronized Object remove() {
+		Object item;
+		while (count == 0)
+			Thread.yield();
+		--count;
+		item = buffer[out];
+		out = (out + 1) % BUFFER_SIZE;
+		return item;
+	}
+}
+```
+
+- Still danger of deadlock
+
+#### Wait() and Notify()
+
+- every lock is also equipped with a wait set
+
+- if a thread teremines it cannot proceed inside a synchronized method it calls wait()
+  - thread releases the lock for the object
+  - the sate of the thread is set to blocked
+  - the thread is placed in the wait set
+- other threads may acquire the lock
+- **deadlock is prevented**
+
+#### Notify()
+
+- normally when a thread exits a **synchronized** method , it only releases the lock (perhaps removing one thread from the *entry set*)
+
+- notify()
+
+  - pick an arbitrary thread T from the wait set and puts it into the entry set
+  - moves the state of the thread from blocked to runnable
+  - T now competes for the lock with all threads in the entry set
+  - once it owns the lock, the wait() call returns
+
+- wait() and notify() are synchronisation but even more a communication machanism
+
+- they are independent of the conditions they are used for
+
+- both need to be called from within a synchronized block, **otherwise** **race condition**
+
+  ![](images/wait_and_entry_set.png)
+```java
+class Example extends Thread
+{
+	public synchronized void enter(Object item) {
+		while (count == BUFFER_SIZE) {
+			try {
+				wait();
+			}
+			catch (InterruptedException e) { }
+		}
+		++count;
+		buffer[in] = item;
+		in = (in + 1) % BUFFER_SIZE;
+		notify();
+	}
+	
+	public synchronized Object remove() {
+		Object item;
+		while (count == BUFFER_SIZE) {
+			try {
+				wait();
+			}
+			catch (InterruptedException e) { }
+		}
+		--count;
+		item = buffer[out];
+		out = (out + 1) % BUFFER_SIZE;
+		notify();
+		return item;
+	}
+}
+```
+
+#### Multiple notifications
+
+- notify() selects an arbitrary thread from the wait set. This may not be the thread that you want to be selected
+- Java does not allow you to specify the thread to be selected
+- notifyAll() removes ALL threads from the wait set and places them in the entry set. This allows the threads to decide among themseles who should proceed next
+- useful if threads may wait for several conditions
+- however, a thread may be woken up for an entirely different condition - put wait() into a while loop
+- notifyAll() is a conservative strategy that works best when multiple threads may be in the wait set
+- inefficient, since all threads need to re-acquire the lock
+
+#### Block synchronisation
+
+- blocks of code - rather than entire methods - may be declared as synchronized
+- this yiels a lock scope that is typically smaller than a synchronized method
+- uses a java object to perform the synchronisation
+- used for larger methods where only a small part is a critical section
+- use of wait() and notify() possible (use the same object)
+- useful for static methods
+
+```java
+class Example1 extends Thread
+{
+	Object mutexLock = new Object();
+
+	public void someMethod() {
+		// non-critical section
+		synchronized(mutexLock) {
+			// critical section
+		}
+		// non-critical section
+	}
+}
+
+class Example2 extends Thread
+{
+	Object mutexLock = new Object();
+
+	public void someMethod() {
+		// non-critical section
+		synchronized(mutexLock) {
+			try{
+				mutexLock.wait();
+			}catch (InterruptedException ie() {}
+		// non-critical section
+	}
+	
+	public void someOtherMethod() {
+		synchronized(mutexLock) {
+			mutexLock.notify();
+		}
+	}
+}
+```
+
+#### Some rules on synchronisation
+
+- A thread that owns the lock for an object may enter another synchonized method of the same object
+- A thread can nest synchronized method invocations for different objects. Thus a thread can own the lock for several objects
+- if a method is not declared synhronized it can be invoked regardless of lock ownership, even while a synchronized method of the same object is being executed
+- if the wait set for an object is empty then a call to notify() or notifyAll() has no effect
+- if an exception occurs while a thread holds a lock, the lock is freed -> possible inconsistent state in the object
