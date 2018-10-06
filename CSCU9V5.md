@@ -989,3 +989,281 @@ class Example2 extends Thread
 - if a method is not declared synhronized it can be invoked regardless of lock ownership, even while a synchronized method of the same object is being executed
 - if the wait set for an object is empty then a call to notify() or notifyAll() has no effect
 - if an exception occurs while a thread holds a lock, the lock is freed -> possible inconsistent state in the object
+
+# Scheduling
+
+## Brief reminder
+
+![](images/context_switching.png)
+
+- CPU is most important resource
+- Switched between processes
+- When should be switched?
+- Which process should be assigned the CPU next?
+
+## Issue
+
+- Thread vs process scheduling
+- Uniprocessor vs mutiprogramming
+  - CPU use and I/O operations
+  - Scheduling of resources
+  - CPU bursts, I/O bursts
+
+![](images/burst_1.png)
+
+### CPU burst
+
+- I/O bound VS CPU bound
+- often exponential
+- important when selecting scheduling algorithm
+
+
+
+![](images/cpu_burst.png)
+
+## Scheduling (recap)
+
+- In order to maximise CPU usage, **avoid** **busy wait** and support multi-tasking the CPU is switched between processes. Processes are organised in **ready**, **running**, **waiting** and other queues:
+
+![](images/scheduling.png)
+
+- The **scheduler** is the component of the OS responsible to select the next ready program to run
+- The **dispatcher** is the component of the OS responsible to manage the context switch
+
+### Scheduler
+
+- Selects the new ready process to execute
+
+- Consist of system calls executed in protected (monitor, supervisior) mode
+
+- These are invoked within the context of the running process
+
+- The schedule maintains data in a suitable structure, a queue data structure typically containing process PCB(Process Control Block)s:
+
+  ![](images/scheduler.png)
+
+- When is the scheduler activated?
+
+![](images/scheduling_2.png)
+
+- Steps:
+   1. One process switches from running to waiting state
+   2. One process switches from running to ready state
+   3. One process switches from waiting to ready
+   4. One process terminates
+
+Note: **1,4** is **non-preemptive**, ie the process "**decides**" to release the CPU, while **2,3** is **preemptive**, ie the running process is "**forced**" to release the CPU.
+
+- Why (for what purpose) is the scheduling mechanism **activated**?
+  - **CPU use**: maximise **CPU usage**, this is one of the most important motivations
+  - **Throughput**: maximise the **number of completed processes** per time unit
+  - **Turnaround time**: (of a process) minimise the **time due for completion** (waiting+executiing+I/O)
+  - **Waiting time**: (of a process) minimise the **time spent in the read queue**
+  - **Response time**: (of a process) minimise the **time to the first output**, eg for time-sharing envinroments
+- Different goals, eg
+  - minimise the maximum response time for good service to all uesrs
+  - minimise the waiting time for interactive applications
+- Different scheduling algorithms exist, exhibiting different features:
+  - First come first served
+  - Shoertest job first
+  - Highest priority first
+  - Round robin (time slicing)
+
+#### Algorithms
+
+##### First come first served (FCFS)
+
+Processes are executed in the same order as they become ready. The ready queue is a **FIFO queue**: an incoming process is inserted in the queue tail, a next-to-execute process is selected from the queue head.
+
+**Non-preemtive**: CPU released only on termination or I/O
+
+Example: ready queue [P~3~[3], P~2~[3], P~1~[24]]
+
+![](images/fcfs_1.png)
+
+Average waiting time: (0+24+27)/3 = 17
+
+Ready queue:  [P~1~[24], P~3~[3], P~2~[3]]
+
+![](images/fcfs_2.png)
+
+Average waiting time: (0+3+6)/3 = 3
+
+Convoy effects: all waiting for the "slowest"
+
+Pro(s):
+
+- simple/efficient implementation
+
+Con(s):
+
+- poor control over process scheduling (sensitive to arrival order)
+- bad for interactive (real-time) applications
+
+##### Shortest job first (SJF)
+
+- Each ready process has associated the next CPU time requirement
+- The process with the shortest next time process is selected
+- The ready queue is a priority queue with predicted next time as a priority
+
+**Example**:
+(each line represents the arrival in the ready queue - initial point - and the CPU time requirement - length)
+
+![](images/sjf_1.png)
+
+**Non-preemtive**:
+(A running process releases the CPU only on termination)
+Average waiting time: (0+6+3+7) / 4 = 4
+
+![](images/sjf_2.png)
+
+**Preemptive**:
+Shortest-Remaining-Time-First (**SRTF**)
+(A running process releases the CPU on the termination or after a given time interval. Note P~4~ that has become the shortest one).
+Average waiting time: (9+0+1+2) / 4 = 3
+
+![](images/sjf_3.png)
+
+Pro(s):
+
+- minimizes average waiting time
+
+Con(s):
+
+- next CPU time has to be estimated (eg weighted average on the most recent running time)
+
+![](images/sjf_4.png)
+
+##### Priority scheduling
+
+- Scheduling can be based on other **priorities** associated to processes, such as time limits, resource usage, price paid etc. The process with the highest priority is selected. The ready queueu is a priority queue. Can be either preemtive or non-preemptive.
+- Same general functioning as SJF (whic hs an example of priority scheduling)
+
+- Problem: **starvation** - common to priority scehduling algorithms
+  Lowest priority processes indefinitely delay by incoming highest-priority ones
+- Solution: **aging** - as seen in page replacement algorithms for memory management
+  Priority of ready processes increases in time so that those "starving", ie the lowest priority processes indefinitely delayed, age more rapidly than those more frequently running. Priority then also depends on age: "too old" starving processes acquire highest priority.
+
+##### Round Robin (RR)
+
+- Based on **time slicing**: equally shares CPU amongst ready processes: each ready process gets **r** time units, a time quantum (milliseconds).
+- Different policies are possible for the ready queue (eg priority based on process relevance or elapsed CPU time), let us assume FIFO
+
+**Preemptive**: when quantum expires, the running process is preempted by a **clock interrupt**
+
+**Example**:
+Process in the ready queue are [P~4~[24], P~3~[68], P~2~[17], P~1~[53]] and r = 20
+
+![](images/rr_1.png)
+
+With a ready queue with n processes, the CPU time is equally shared (1/n of the total amount) amongst processes and each process **waits** at most **(n-1)*r** in the queue before getting the CPU (plus context switch overhead)
+
+Relevance of r:
+
+- r large approximates FCFS
+- r too small makes context switch overhead predominant
+
+Pro(s):
+
+- better response time
+
+Con(s):
+
+- higher average turnaround time than SJF, typically (depends on time quantum)
+
+### Dispatcher
+
+Once that a new process to run has been selected by tehe scheduler, the dispatcher - an OS component - is responsible for managing the context switch
+
+- it gives control of the CPU to the process selected by the scheduler
+- first, it saves the state of the old process
+- then loads the state of the new process and
+- jumps to the proper location to resume the new process by suitably setting the PC
+
+Time spent for context switching is critical (dispatch latency)
+
+### Multilevel queue scheduling
+
+- Ready queue is partitioned into separate queues:
+
+  - foreground (interactive)
+  - background (batch)
+
+- each queue has its own scheduling algorithm
+
+  - foreground: RR
+  - background: FCFS
+
+- Scheduling must be done between queues
+
+  - fixes priority scheduling: ie serve all from foreground then from background -> starvation
+  - Time slice: each queue gets a certaion amount of CPU time which it can schedule amongst its processes; ie 80% to foreground in RR and 20% to bacgrkound in FCFS
+
+  ![](images/multilevel_queue_scheduling.png)
+
+
+### Multilevel feedback-queue
+
+- A process can move between the various queues -> aging
+
+- Scheduling parameters:
+
+  - number of queues
+  - scheduling algorithms for each queue
+  - method used to determine when to upgrade a process
+  - method used to teremine when to demote a process
+  - method used to determine which queue a process will enter when the process needs service
+
+  ![](images/multilevel_feedback_queue.png)
+
+  ### Java thread scheduling
+
+  - JVM uses a preemtpive, priority-based scheduling algorithm
+  - FIFO queue is used if there are multiple threads with the same priority
+  - JVM schedules a thread to run when
+    - the currently running thread exits the runnable state
+    - a higher priority thread enters the runnable state
+
+  #### Time slicing
+
+  - Since the JVM doesn't ensure time-slicing the yield() method may be used
+  - This "yields" control to another thread of equal priority
+  - Thread priorities:
+    - Thread.MIN_PRIORITY - minimum thread priority
+    - Thread.MAX_PRIORITY - maximum thread priority
+    - Thread.NORM_PRIORITY - default thread priority
+  - Priorities may be set using setPriority() method:
+    setPriority(Thread.NURM_PRIORITY + 2)
+
+# Inter-Process Communiation & syncronisation (IPC)
+
+## Process (thread) interactions
+
+- Processes may need to cooperate to carry out a task
+  - a process may make a request and wait for the service to be done
+  - a process may need to send the requested data, or **signalling** that a task has been done
+- Cooperating processes are in charge of implementing interaction policies, which should fulfil desirable properties, such as absence of deadlock ,fairness (non-starvation)
+  - We need to keep this in mind when programming concurrent - either processes or threads - applications
+- Competing (cooperating) processes need to *wait* to acquire a shared resource and need to be able t o *signal* to indicate that they have finished with that resource
+
+## Synchronisation for shared data
+
+- A number of processes are simultaneously accessing memory
+- Some facts can be asserted:
+  - reading a memory locations is atomic
+  - writing a memory location is atomic
+- There may be arbitrary interleaving of machine instruction executiin -> arbitrary interleaving of memory access
+- Between any wto instructions any number of instructions from any other computation may be executed
+- Consider: x := x +1
+
+## Critical section specifiction
+
+1. **At most one** process inside a critical section (mutual exclusion)
+2. **No assumptions on speeds** or numbers of processors and processes (unless you are programing for a specific architecture, execution envinroment which you can fully control)
+   1. Processes may be running on a multiprocessor
+   2. Not necessarily a hardware operation avaiable
+3. **No** process running outside its critical region may **block** other processes
+4. **No** process should have to **wait forever** to enter its critical region
+   1. no starvation
+   2. progress - no indefinite busy wait
+5. **no deadlock**
