@@ -1267,3 +1267,346 @@ Time spent for context switching is critical (dispatch latency)
    1. no starvation
    2. progress - no indefinite busy wait
 5. **no deadlock**
+
+## Possible solutions
+
+![](images/sync_possible_solutions.png)
+
+### Disabling interrupts
+
+- Interrupts are the base for timing and preemption and external device handling
+- No clock interrupts can occur
+- No CPU context switch
+- No other processes can access the shared resource
+- Possible abuse of the system
+- Not applicable to computers with more than one CPU (disabling interrupts only affects one CPU)
+- Not applicable as a general mutual exclusion mechanism
+
+### Test and set lock (TSL)
+
+- Hardware operation often supported by multiprocesssor computers
+
+- Reads the contents of a memory address into a register and writes a nonzero value to that location
+
+- Is register zero?
+
+- Guaranteed to be indivisible
+
+- No context switch can occur
+
+- Memory bus is blocked to prevent other CPUs from accessing memory during operation
+
+- Tsl for xi86: xchg m, r:
+
+  ```
+  enter_region:
+      tsl register, flag	;copy flag to register & set flag to 1
+      cmp register, #0	;was flag set?
+      jnz enter_region	;if not zero (flag set) loop
+      ret					;critical region entered, return to caller
+  
+  leave_region:
+  	mov flag, #0		;unset flag
+  	ret					;left critical section, return to caller
+  ```
+
+### Lock variables
+
+- Single, shared variable; initially set 0
+- Enter a critical sections: test variable
+  - if 0, set it 1, enter critical section
+  - if 1, wait until it becomes 0
+- Race condition still occurs, if context switch happens after the check
+- No solution
+
+```java
+public class ME extends BaseME
+{
+	public ME() {
+		flag[0] = false;
+		flag[1] = false;
+	}
+	
+	public void enteringCS(int t) {
+		int other = 1 - t;
+		flag[t] = true;
+		while (flag[other] == true)
+			Thread.yield();
+	}
+	
+	public void leavingCS(int t) {
+		flag[t] = false;
+	}
+	
+	private volatile boolean[]
+		flag = new boolean[2];
+	}
+}
+```
+
+- volatile : variable stored in main memory (it skips the cache)
+- Possible endless loop:
+  if context switch occurs after setting the flag both threads wait for the other
+
+### Strict alternation
+
+```java
+public class StrictA extends baseME
+{
+	public StrictA() {
+		turn = TURN_0;
+	}
+	
+	public void enteringCS(int t) {
+		while (turn != t)
+		Thread.yield();
+	}
+	
+	public void leavingCS(int t) {
+		turn = 1 - t;
+	}
+	private volatile int turn;
+}
+```
+
+- *turn* keeps track which thread may enter its critical section
+- After the first thread finished, the second may enter, afterwards the first again
+- However, if process one wants to enter and it is process two's turn?
+- Solution if all the processes are equally fast
+- Violates the above condition:
+  A thread outside its critical section blocks another thread
+
+### Peterson's solution
+
+- Algortihm involves
+
+  - an array, one element per thread
+  - a flag
+
+- First thread sets its array element and thus indicates interest to enter its CS
+
+- flag is set to the other thread
+
+- If the second thread also wants to enter its CS (array element is set) the first thread blocks
+
+- If both threads call enterCS simultaneously, one thread overwrites flags -> the first thread proceeds and the second enters the CS afterwards
+
+- No endless blocking
+```java
+public class PSol extends baseME {
+	public PSol() {
+		flag[0] = false;
+		flag[1] = false;
+		turn = TURN_0;
+	}
+    
+	public void enteringCS(int t) {
+		int other = 1 - t;
+		flag[t] = true;
+		turn = other;
+		while ( (flag[other] == true) && (turn == other) )
+			Thread.yield();
+    }
+    
+	public void leavingCS(int t) {
+		flag[t] = false;
+	}
+
+	private volatile int turn;
+	private volatile boolean[] flag = new boolean[2];
+}
+```
+
+- This solution works
+
+### Busy waiting
+
+- All solutions presented so far used busy waiting to block processes
+  - Does not really block the process but it just enters a loop
+  - Wastes CPU time
+  - Priority inversion problem
+    - Two processes L (low priority) and H (high priority)
+    - H is run whenever it is in ready state
+    - While L is in its cirtical section, H becomes ready -> context switch
+    - H wants to enter critical section -> busy waiting for L to leave
+    - L is never scheduled to run -> L never leaves critical section
+    - H never progresses
+- BW can be advantegous in multiprocessor systems
+  - For short delays
+  - No context switch necessary
+
+### Semaphore
+
+- Integer variable
+- Construct that **does not need busy waiting**
+- Accessed only by two operations
+  - P() - decrement sempahore (Dutch)
+    - process or thread blocks if sempahore will be negative
+  - V() - increment semaphore
+- P() and V() are executed **indivisbly** (only on thread or process can modify sempaphore)
+
+
+
+- Counting semaphore (unrestircted values)
+
+  - can be used to protect a number of resources
+  - semaphore is initialised with the avaiable number
+
+- Binary semaphore (only values of 0 and 1)
+
+  ```
+  Semaphore S; // initialized to 1
+  	P(S);
+  	CriticalSection();
+  	V(S);
+  ```
+
+- Associate a process queue with a semaphore
+
+- Processes changes into waiting state
+
+- Processes are woken up from within V() (change state to ready)
+
+- Control is with t he CPU scheduler
+
+```java
+public class Semaphore {
+	public Semaphore() {
+		value = 0;
+	}
+	
+	public Semaphore(int v) {
+		value = v;
+	}
+	
+	public synchronized void P() {
+		while (value <= 0) {
+			try {
+				wait();
+			} catch (InterruptedException e) { }
+		}
+		value --;
+	}
+
+	public synchronized void V() {
+		++value;
+		notify();
+	}
+
+	private int value;
+}
+
+public class SemaphoreExample {
+	public static void main(String args[]) {
+		Semaphore sem = new Semaphore(1); // get a semaphore & initialise 1
+		Worker[] bees = new Worker[5]; // get 5 threads
+		for (int i = 0; i < 5; i++)
+			bees[i] = new Worker(sem); // provide semaphore to threads
+		for (int i = 0; i < 5; i++)
+			bees[i].start();
+    }
+}
+
+public class Worker extends Thread {
+	public Worker(Semaphore s) { sem = s;} // constructor
+
+    public void run() {
+		while (true) {
+			sem.P(); // enter critical section, may block here
+			// in critical section
+			sem.V(); // leave cs and wakeup other threads
+			// out of critical section
+		}
+	}
+    
+    private Semaphore sem;
+}
+```
+
+## Deadlock
+
+- Deadlock (of a set of processes)
+  - two or more processes are waiting indefinitely for an event that can only be caused by one of the waiting processes
+- Let S and Q be two semaphores initialised to 1
+
+![](images/deadlock_semaphore_example.png)
+
+- Starvation (of one or more processes)
+  - indefinite blocking. A process may never be removed from the semaphore queue in which it is suspended (LIFO queue)
+
+## Monitors
+
+- Semaphores are error prone
+  - correct order is essential
+  - Errors are hard to detect, depend on particular execution sequence
+    - Swap the order of P() AND V()
+    - Replace V() with P()
+    - Omit either P() or V()
+  - Consider major software development projects
+- Monitors are high-level construct to prevent such errors
+- Monitor presents a set of programmer defined operations that provide **automatic mutual exclusion**
+- Monitor type also contains variables to define the **state of an instance** of the monitor
+- A monitor method can **only accesss monitor internal data and formal parameters**
+- Local variables may only be accessed from within the monitor
+- Monitor construct **prohibits concurrent access** to all methods defined within that monitor
+
+```java
+monitor Monitor-name
+{
+	integer i; // variables
+	condition c; // condition variables
+	
+	public producer(...) {
+		...
+	}
+	
+    public consumer(...) {
+		...
+	}
+}
+```
+
+## Condition variables
+
+- Condition variables are used for use specific synchronisation
+  (buffer full/empty) condition x,y;
+- Opertaions wait() and signal() are defined
+  - x.wait() suspends the onvoking thread until
+  - x.signal() is aclled by another thread
+- Thread frees the monitor after blocking
+- After signalling a thread:
+  - signal-and-wait: signalling thread waits for other thread to finish the monitor or to block on another condition
+  - signal-and-continue: signalling thread continues processing: The woken up thread continues afterwards
+
+![](images/monitor.png)
+
+## Message passing (recap)
+
+- Consider distributes systems without shared memory
+  - Semaphores are too low level
+  - Monitors are inapplicable
+  - No information exchange possible between machines
+- Message passing
+- Implements two messages
+  - send(desination, message)
+  - receive(source, message)
+- Implemented as system calls rather than language constructs
+  - messages are buffered by the operating system
+  - usually provided by a library
+- Receiver may block when there are no messages or return with an error code
+- Issues
+  - messages may be lost by the network
+  - naming of processes
+  - authentication of processes
+  - on the same machine: performance
+
+## Producer-consumer example
+
+- All messages are the same size
+- messages are buffered by the OS
+- N messages are used (N elements in a buffer)
+- Consumer starts by sending N empty messages to the producer
+- Whenever the producer has an item to send, it takes an empty message, fills it and sends it to the consumer
+- Producer will be blocked if there are no empty messages waiting
+- Consumer blocks if there are no filled messages waiting
+- Zero buffer option possible
