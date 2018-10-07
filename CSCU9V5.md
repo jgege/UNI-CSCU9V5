@@ -14,7 +14,7 @@
 
 ### Real-time systems
 
-- timing constraints dictated by the environtment of a system
+- timing constraints dictated by the environment of a system
 - system has to respond to external events within a certain time
 - Software monitors & controls aspects of the environment of the system
 - Examples:
@@ -30,7 +30,7 @@
   - Other tasks are performed while devices are busy
 - User want to carry out a number of tasks in parallel (lengthy computation + reading e-mail)
 - Running programs of different users in parallel
-- Preemtive and non-premtive scheduling
+- Preemptive and non-preemptive scheduling
 - Distributed operating systems
 
 ## Potentially concurrent systems
@@ -56,7 +56,7 @@
 
 
 
-## Distrubited systems
+## Distributed systems
 
 ### Benefits
 
@@ -72,10 +72,10 @@
 
 |      |      |
 | ---- | ---- |
-| Expensive software        | Communcation delay |
-| Scalability/Overhead      | Incosistent state  |
+| Expensive software        | Communication delay |
+| Scalability/Overhead      | Inconsistent state |
 | Security                  | No global time     |
-| Indepedent fauilure nodes | Heterogeneity      |
+| Independent failure nodes | Heterogeneity      |
 
 # Processes
 
@@ -120,7 +120,7 @@
 
 - Some processes cannot run
 
-- Processes waiting for the resurouces
+- Processes waiting for the resurgences
 
   - CPU (ready processes)
   - Other resources (blocked processes)
@@ -169,7 +169,7 @@
 ![](images/context_switching.png)
 
 - when CPU switches to another process, the system must save the state of the old process and load the saved state for the new process
-- context-swtich time is overhead; the system does no useful work while switching
+- context-switch time is overhead; the system does no useful work while switching
 - time dependent on hardware support
 
 ### Process creation and termination
@@ -208,12 +208,12 @@
 
 - **Independent process** 
   - cannot affect or be affected by the execution of another process
-- **Cooperating proccess**
+- **Cooperating processes**
   - can affect or be affected by the execution of another process
-- Advanteges of process cooperation
+- Advantages of process cooperation
   - information sharing (shared files)
-  - computation pseed-up (split-up of a task into subtasksk and run them in parallel; note: number of processors)
-  - Modulairty (dived a system into separate processes)
+  - computation speed-up (split-up of a task into sub tasks and run them in parallel; note: number of processors)
+  - Modularity (divide a system into separate processes)
   - Convenience (a user has many tasks; eg printing, editing compiling)
 
 ### Producer - consumer problem
@@ -232,21 +232,21 @@
 ### Race conditions
 
 - Concurrent access to shared data may result in data inconsistency
-- Maintaining data consistency requires machanisms to ensure the orderly execution of cooperating processes
+- Maintaining data consistency requires mechanisms to ensure the orderly execution of cooperating processes
 - Example: print spooler
   - User processes put file names into a spooler directory
-  - Printer deamon periodically checkes for any new files in the spooler directory (if there are any print the file and remove file name from spooler directory)
+  - Printer daemon periodically checks for any new files in the spooler directory (if there are any print the file and remove file name from spooler directory)
   - Directory has infinite number of slots
   - Two globally available variables:
     - **out** points at the next file to be printed
-    - **in** points at the next avaiable slot
+    - **in** points at the next available slot
   - At a time
     - slots 0-3 are empty (files printed)
     - slots 4-6 are full (files to be printed)
   - ![](images/race_condition_example.png)
   - Almost simultaneously processes A and B want to print
   - Processes A reads in (value 7) and assigns it to a local variable
-  - Processs context switch occurs to process B
+  - Process context switch occurs to process B
   - Process B reads in (value 7) and stores a file in slot 7, updates in to 8
   - Process A runs again, continuing from where it stopped
   - Process A reads local variable and stores a file at slot 7
@@ -257,7 +257,7 @@
 
 - process is an operating system abstraction (program in execution)
 - One program may result in many processes
-- Processes may be interupted while processing (process states)
+- Processes may be interrupted while processing (process states)
 - Processes cooperate (communicate)
 - Race conditions
 
@@ -267,7 +267,7 @@
 
 - so far implied that a process has ONE thread of execution
 
-- Many OS have exnteded the process model to allow processes to have more than one thread of execution
+- Many OS have extended the process model to allow processes to have more than one thread of execution
 
 - **Process scheduling** and context switching is heavyweight
 
@@ -299,7 +299,7 @@
     - perform spell checking
   - Web browsing
     - Display text/images
-    - Retrive data from network
+    - Retrieve data from network
   - Web server
     - Single process - long wait for some requests
     - Create a process per request - enormous overhead
@@ -310,7 +310,7 @@
 - **Responsiveness** - an application continues running even if part of it is blocked or performing a lengthy operation
 - **Resource sharing** - threads share memory and resources of the process they belong to
 - **Economy** - allocating memory and resources to processes is costly. Creating a switching between threads is more cost effective as overhead is smaller
-- **Utilisation of multiprocesssor architectures** -  each thread may run on a different processor. In a single processor environment, the context switching allows pseudo parallelism
+- **Utilisation of multiprocessor architectures** -  each thread may run on a different processor. In a single processor environment, the context switching allows pseudo parallelism
 
 ## Thread implementation
 
@@ -450,7 +450,7 @@ public class OurApplet extends Applet implements Runnable {
 ### Managing Java Threads
 
 - **suspend()** - suspends execution of the currently running thread
-  - applet (running seperate thread) displaying some graphics is not visible -> suspend the thread
+  - applet (running separate thread) displaying some graphics is not visible -> suspend the thread
 - **sleep()** - puts the currently running thread to sleep for a specified amount of time
 - **resume()** - resumes execution of a suspended thread
   - Applet is visible again -> resume the thread and processing
@@ -535,13 +535,13 @@ class Consumer extends Thread {
 
 #### One to one![](/mnt/jgdata/school/uni_bsc/CSCU9V5/notes/images/interaction_c_one_to_one.png)
 
-- Appropiate in systems with static configurations of interactions between individual processes
+- Appropriate in systems with static configurations of interactions between individual processes
 - Example:
-  - pipline in unix commands
+  - pipeline in UNIX commands
 
 #### Any to one ![](/mnt/jgdata/school/uni_bsc/CSCU9V5/notes/images/interaction_c_many_to_one.png)
 
-- Multple clients interact with a single server
+- Multiple clients interact with a single server
 - Clients invoke a well known server
 - Server accepts requests from any client
 - Server does not know which client will interact next, waits for the next client
@@ -560,7 +560,7 @@ class Consumer extends Thread {
 - User to notify a set of interested clients
 - Broadcast (sent out to everyone)
   - Usually no record of reception of communication
-  - Clients liseten for information
+  - Clients listen for information
 - Multicast (sent out to a specific set of recipients)
   - How to identify the recipients (clients join a list - mailing list)
   - Reliable, unreliable (like broadcast)
@@ -605,7 +605,7 @@ class Consumer extends Thread {
 
 ##### Direct communication
 
-- processes need to explicitly name the receptionist / sender (synchronous adressing)
+- processes need to explicitly name the receptionist / sender (synchronous addressing)
   - send(P, message)
   - receive(Q, message)
 - Link is established automatically between the two parties; processes only need to know each other
@@ -623,7 +623,7 @@ class Consumer extends Thread {
   - object into which messages can be included and removed
   - each mailbox has its unique identification
 - Processes can communicate with other processes via different mailboxes
-- Communcating processes need to have shared mailboxes
+- Communicating processes need to have shared mailboxes
   - send(A, message) - send a message to mailbox A
   - receive(A, message) - receive a message from mailbox A
 - A link is only established if the processes share a mailbox
@@ -641,7 +641,7 @@ class Consumer extends Thread {
     - users need to be notified of the disappearance of the mailbox
   - the operating system
     - independent, not associated with any process
-    - operating system offers machanisms for
+    - operating system offers mechanisms for
       - creating a new mailbox
       - send and receive messages
       - delete a mailbox
@@ -705,11 +705,11 @@ public class MessageQueue
 ##### Shared memory
 
 - Useful when:
-  - In an upproteceted system where all processes and OS run in the same address space (MACOS until 7.5)
+  - In an unprotected system where all processes and OS run in the same address space (MACOS until 7.5)
   - The language system operates a simple OS (Ada, ML)
   - In systems where multithreading is provided above the OS (Sun LWT library)
-- Not useful wheh:
-  - In protected systems where processes run in seperate address spaces
+- Not useful when:
+  - In protected systems where processes run in separate address spaces
     - protection and addressing are orthogonal
   - Between processes on different CPUs or machines
     - However distributed shared memory
@@ -731,10 +731,10 @@ public class MessageQueue
 ## Background
 
 - Cooperating sequential threads/processes run asynchronously and share data
-- Concurrent access to shared data may result in data incosistency
-- Mainting data consistency requires machanisms to ensure the orderly execution of cooperating proceses
+- Concurrent access to shared data may result in data inconsistency
+- Maintaining data consistency requires mechanisms to ensure the orderly execution of cooperating processes
 - Illustrate the problem with the bounded buffer problem
-- Shared-memory solution to bounded-buffer problem has a reace condition on the class data **count**
+- Shared-memory solution to bounded-buffer problem has a race condition on the class data **count**
 
 ## Bounded buffer problem
 
@@ -753,9 +753,9 @@ public class MessageQueue
 ### Race conditions: the problem
 
 - Shared variables are written to/read from
-- Transfer from one consistent state to another takes several separate opreations
+- Transfer from one consistent state to another takes several separate operations
 - Context switch can happen any time and operations be interrupted
-- Concurrent threads (multi-processsor) may share data, this leads to corrupted data
+- Concurrent threads (multiprocessor) may share data, this leads to corrupted data
 - Approach: critical section
 
 ## Critical sections
@@ -767,14 +767,14 @@ public class MessageQueue
   - updating a shared table
   - writing to a file
 - Access to critical sections is regulated
-  - if ont thread executes in a critical section no other thread may enter their critical secionts
+  - if one thread executes in a critical section no other thread may enter their critical sections
   - mutual exclusion in time
 
 ## Solving the critical section problem
 
-A solutin must satisfy four requirements
+A solution must satisfy four requirements
 
-- No two processes may be simultaneously inside their critical secionts
+- No two processes may be simultaneously inside their critical sections
 - No assumptions may be made concerning speeds or numbers of processors
 - No process running outside its critical region may block other processes
 - No process should have to wait forever to enter its critical region (fairness/starvation)
@@ -783,12 +783,12 @@ A solutin must satisfy four requirements
 
 ![](images/sync_possible_solutions.png)
 
-### Java Syncronisation
+### Java Synchronisation
 
-- enforcing mutual exclusion between therads -> thread safe
+- enforcing mutual exclusion between threads -> thread safe
 - alternative to busy waiting
 - solving race conditions
-  - syncronized
+  - synchronized
   - wait(), notify(), notifyAll()
 
 ### Busy waiting
@@ -802,7 +802,7 @@ A solutin must satisfy four requirements
 
 ### Deadlock scenario
 
-- Deadlock (informal): a series of processes/threads is waiting on conditions (resources) depending on the other procceses/threads in the set and no one can run. Permanent condition
+- Deadlock (informal): a series of processes/threads is waiting on conditions (resources) depending on the other processes/threads in the set and no one can run. Permanent condition
 
 Necessary conditions for deadlock:
 
@@ -813,10 +813,10 @@ Necessary conditions for deadlock:
 
 
 
-- JVM uses prorities, thread with highest prority of all threads in runnable state is run before threads with lower priority
+- JVM uses priorities, thread with highest priority of all threads in runnable state is run before threads with lower priority
 - Producer has higher priority than consumer
   - if buffer is full, producer will execute yield()
-  - consumer still cannoit run because of lower priority
+  - consumer still cannot run because of lower priority
   - -> deadlock
 
 ### Fixing race conditions
@@ -831,7 +831,7 @@ Necessary conditions for deadlock:
 
 - if the lock is not available (owned by another thread) the thread blocks
 - the blocked thread is put into a queue called *entry set*
-- entry set represents all threads waiting for the lock to become avaiable
+- entry set represents all threads waiting for the lock to become available
 - the lock is released when the owning thread exits a synchronized method
 - one thread from the entry set gets the lock
 
@@ -870,9 +870,9 @@ class Example extends Thread
 
 - every lock is also equipped with a wait set
 
-- if a thread teremines it cannot proceed inside a synchronized method it calls wait()
+- if a thread terminates it cannot proceed inside a synchronized method it calls wait()
   - thread releases the lock for the object
-  - the sate of the thread is set to blocked
+  - the state of the thread is set to blocked
   - the thread is placed in the wait set
 - other threads may acquire the lock
 - **deadlock is prevented**
@@ -888,7 +888,7 @@ class Example extends Thread
   - T now competes for the lock with all threads in the entry set
   - once it owns the lock, the wait() call returns
 
-- wait() and notify() are synchronisation but even more a communication machanism
+- wait() and notify() are synchronisation but even more a communication mechanism
 
 - they are independent of the conditions they are used for
 
@@ -932,7 +932,7 @@ class Example extends Thread
 
 - notify() selects an arbitrary thread from the wait set. This may not be the thread that you want to be selected
 - Java does not allow you to specify the thread to be selected
-- notifyAll() removes ALL threads from the wait set and places them in the entry set. This allows the threads to decide among themseles who should proceed next
+- notifyAll() removes ALL threads from the wait set and places them in the entry set. This allows the threads to decide among themselves who should proceed next
 - useful if threads may wait for several conditions
 - however, a thread may be woken up for an entirely different condition - put wait() into a while loop
 - notifyAll() is a conservative strategy that works best when multiple threads may be in the wait set
@@ -941,7 +941,7 @@ class Example extends Thread
 #### Block synchronisation
 
 - blocks of code - rather than entire methods - may be declared as synchronized
-- this yiels a lock scope that is typically smaller than a synchronized method
+- this yields a lock scope that is typically smaller than a synchronized method
 - uses a java object to perform the synchronisation
 - used for larger methods where only a small part is a critical section
 - use of wait() and notify() possible (use the same object)
@@ -984,9 +984,9 @@ class Example2 extends Thread
 
 #### Some rules on synchronisation
 
-- A thread that owns the lock for an object may enter another synchonized method of the same object
+- A thread that owns the lock for an object may enter another synchronized method of the same object
 - A thread can nest synchronized method invocations for different objects. Thus a thread can own the lock for several objects
-- if a method is not declared synhronized it can be invoked regardless of lock ownership, even while a synchronized method of the same object is being executed
+- if a method is not declared synchronized it can be invoked regardless of lock ownership, even while a synchronized method of the same object is being executed
 - if the wait set for an object is empty then a call to notify() or notifyAll() has no effect
 - if an exception occurs while a thread holds a lock, the lock is freed -> possible inconsistent state in the object
 
@@ -1004,7 +1004,7 @@ class Example2 extends Thread
 ## Issue
 
 - Thread vs process scheduling
-- Uniprocessor vs mutiprogramming
+- Uniprocessor vs multiprogramming
   - CPU use and I/O operations
   - Scheduling of resources
   - CPU bursts, I/O bursts
@@ -1034,7 +1034,7 @@ class Example2 extends Thread
 
 - Selects the new ready process to execute
 
-- Consist of system calls executed in protected (monitor, supervisior) mode
+- Consist of system calls executed in protected (monitor, supervisor) mode
 
 - These are invoked within the context of the running process
 
@@ -1057,15 +1057,15 @@ Note: **1,4** is **non-preemptive**, ie the process "**decides**" to release the
 - Why (for what purpose) is the scheduling mechanism **activated**?
   - **CPU use**: maximise **CPU usage**, this is one of the most important motivations
   - **Throughput**: maximise the **number of completed processes** per time unit
-  - **Turnaround time**: (of a process) minimise the **time due for completion** (waiting+executiing+I/O)
+  - **Turnaround time**: (of a process) minimise the **time due for completion** (waiting+executing+I/O)
   - **Waiting time**: (of a process) minimise the **time spent in the read queue**
-  - **Response time**: (of a process) minimise the **time to the first output**, eg for time-sharing envinroments
+  - **Response time**: (of a process) minimise the **time to the first output**, eg for time-sharing environments
 - Different goals, eg
-  - minimise the maximum response time for good service to all uesrs
+  - minimise the maximum response time for good service to all users
   - minimise the waiting time for interactive applications
 - Different scheduling algorithms exist, exhibiting different features:
   - First come first served
-  - Shoertest job first
+  - Shortest job first
   - Highest priority first
   - Round robin (time slicing)
 
@@ -1075,7 +1075,7 @@ Note: **1,4** is **non-preemptive**, ie the process "**decides**" to release the
 
 Processes are executed in the same order as they become ready. The ready queue is a **FIFO queue**: an incoming process is inserted in the queue tail, a next-to-execute process is selected from the queue head.
 
-**Non-preemtive**: CPU released only on termination or I/O
+**Non-preemptive**: CPU released only on termination or I/O
 
 Example: ready queue [P~3~[3], P~2~[3], P~1~[24]]
 
@@ -1111,7 +1111,7 @@ Con(s):
 
 ![](images/sjf_1.png)
 
-**Non-preemtive**:
+**Non-preemptive**:
 (A running process releases the CPU only on termination)
 Average waiting time: (0+6+3+7) / 4 = 4
 
@@ -1136,10 +1136,10 @@ Con(s):
 
 ##### Priority scheduling
 
-- Scheduling can be based on other **priorities** associated to processes, such as time limits, resource usage, price paid etc. The process with the highest priority is selected. The ready queueu is a priority queue. Can be either preemtive or non-preemptive.
-- Same general functioning as SJF (whic hs an example of priority scheduling)
+- Scheduling can be based on other **priorities** associated to processes, such as time limits, resource usage, price paid etc. The process with the highest priority is selected. The ready queue is a priority queue. Can be either preemptive or non-preemptive.
+- Same general functioning as SJF (which has an example of priority scheduling)
 
-- Problem: **starvation** - common to priority scehduling algorithms
+- Problem: **starvation** - common to priority scheduling algorithms
   Lowest priority processes indefinitely delay by incoming highest-priority ones
 - Solution: **aging** - as seen in page replacement algorithms for memory management
   Priority of ready processes increases in time so that those "starving", ie the lowest priority processes indefinitely delayed, age more rapidly than those more frequently running. Priority then also depends on age: "too old" starving processes acquire highest priority.
@@ -1173,7 +1173,7 @@ Con(s):
 
 ### Dispatcher
 
-Once that a new process to run has been selected by tehe scheduler, the dispatcher - an OS component - is responsible for managing the context switch
+Once that a new process to run has been selected by the scheduler, the dispatcher - an OS component - is responsible for managing the context switch
 
 - it gives control of the CPU to the process selected by the scheduler
 - first, it saves the state of the old process
@@ -1197,7 +1197,7 @@ Time spent for context switching is critical (dispatch latency)
 - Scheduling must be done between queues
 
   - fixes priority scheduling: ie serve all from foreground then from background -> starvation
-  - Time slice: each queue gets a certaion amount of CPU time which it can schedule amongst its processes; ie 80% to foreground in RR and 20% to bacgrkound in FCFS
+  - Time slice: each queue gets a certain amount of CPU time which it can schedule amongst its processes; ie 80% to foreground in RR and 20% to background in FCFS
 
   ![](images/multilevel_queue_scheduling.png)
 
@@ -1211,14 +1211,14 @@ Time spent for context switching is critical (dispatch latency)
   - number of queues
   - scheduling algorithms for each queue
   - method used to determine when to upgrade a process
-  - method used to teremine when to demote a process
+  - method used to terminate when to demote a process
   - method used to determine which queue a process will enter when the process needs service
 
   ![](images/multilevel_feedback_queue.png)
 
   ### Java thread scheduling
 
-  - JVM uses a preemtpive, priority-based scheduling algorithm
+  - JVM uses a preemptive, priority-based scheduling algorithm
   - FIFO queue is used if there are multiple threads with the same priority
   - JVM schedules a thread to run when
     - the currently running thread exits the runnable state
@@ -1256,12 +1256,12 @@ Time spent for context switching is critical (dispatch latency)
 - Between any wto instructions any number of instructions from any other computation may be executed
 - Consider: x := x +1
 
-## Critical section specifiction
+## Critical section specification
 
 1. **At most one** process inside a critical section (mutual exclusion)
-2. **No assumptions on speeds** or numbers of processors and processes (unless you are programing for a specific architecture, execution envinroment which you can fully control)
+2. **No assumptions on speeds** or numbers of processors and processes (unless you are programming for a specific architecture, execution environment which you can fully control)
    1. Processes may be running on a multiprocessor
-   2. Not necessarily a hardware operation avaiable
+   2. Not necessarily a hardware operation available
 3. **No** process running outside its critical region may **block** other processes
 4. **No** process should have to **wait forever** to enter its critical region
    1. no starvation
@@ -1284,7 +1284,7 @@ Time spent for context switching is critical (dispatch latency)
 
 ### Test and set lock (TSL)
 
-- Hardware operation often supported by multiprocesssor computers
+- Hardware operation often supported by multiprocessor computers
 
 - Reads the contents of a memory address into a register and writes a nonzero value to that location
 
@@ -1378,7 +1378,7 @@ public class StrictA extends baseME
 
 ### Peterson's solution
 
-- Algortihm involves
+- Algorithm involves
 
   - an array, one element per thread
   - a flag
@@ -1427,11 +1427,11 @@ public class PSol extends baseME {
   - Priority inversion problem
     - Two processes L (low priority) and H (high priority)
     - H is run whenever it is in ready state
-    - While L is in its cirtical section, H becomes ready -> context switch
+    - While L is in its critical section, H becomes ready -> context switch
     - H wants to enter critical section -> busy waiting for L to leave
     - L is never scheduled to run -> L never leaves critical section
     - H never progresses
-- BW can be advantegous in multiprocessor systems
+- BW can be advantageous in multiprocessor systems
   - For short delays
   - No context switch necessary
 
@@ -1440,17 +1440,17 @@ public class PSol extends baseME {
 - Integer variable
 - Construct that **does not need busy waiting**
 - Accessed only by two operations
-  - P() - decrement sempahore (Dutch)
-    - process or thread blocks if sempahore will be negative
+  - P() - decrement semaphore (Dutch)
+    - process or thread blocks if semaphore will be negative
   - V() - increment semaphore
-- P() and V() are executed **indivisbly** (only on thread or process can modify sempaphore)
+- P() and V() are executed **indivisibly** (only on thread or process can modify semaphore)
 
 
 
-- Counting semaphore (unrestircted values)
+- Counting semaphore (unrestricted values)
 
   - can be used to protect a number of resources
-  - semaphore is initialised with the avaiable number
+  - semaphore is initialised with the available number
 
 - Binary semaphore (only values of 0 and 1)
 
@@ -1467,7 +1467,7 @@ public class PSol extends baseME {
 
 - Processes are woken up from within V() (change state to ready)
 
-- Control is with t he CPU scheduler
+- Control is with the CPU scheduler
 
 ```java
 public class Semaphore {
@@ -1546,7 +1546,7 @@ public class Worker extends Thread {
 - Monitors are high-level construct to prevent such errors
 - Monitor presents a set of programmer defined operations that provide **automatic mutual exclusion**
 - Monitor type also contains variables to define the **state of an instance** of the monitor
-- A monitor method can **only accesss monitor internal data and formal parameters**
+- A monitor method can **only access monitor internal data and formal parameters**
 - Local variables may only be accessed from within the monitor
 - Monitor construct **prohibits concurrent access** to all methods defined within that monitor
 
@@ -1570,9 +1570,9 @@ monitor Monitor-name
 
 - Condition variables are used for use specific synchronisation
   (buffer full/empty) condition x,y;
-- Opertaions wait() and signal() are defined
-  - x.wait() suspends the onvoking thread until
-  - x.signal() is aclled by another thread
+- Operations wait() and signal() are defined
+  - x.wait() suspends the invoking thread until
+  - x.signal() is called by another thread
 - Thread frees the monitor after blocking
 - After signalling a thread:
   - signal-and-wait: signalling thread waits for other thread to finish the monitor or to block on another condition
@@ -1588,7 +1588,7 @@ monitor Monitor-name
   - No information exchange possible between machines
 - Message passing
 - Implements two messages
-  - send(desination, message)
+  - send(destination, message)
   - receive(source, message)
 - Implemented as system calls rather than language constructs
   - messages are buffered by the operating system
@@ -1646,7 +1646,7 @@ monitor Monitor-name
   - number of instances of the same type (printers)
 - Deadlocks can involve any number of processes and resources
 
-### Non-preemtable resources
+### Non-preemptable resources
 
 - Preemption may cause the process to fail
   - Example: CD burner, if started to burn and taken away and given to another process -> garbage in the CD
@@ -1680,12 +1680,12 @@ monitor Monitor-name
   - only processes in the set can release resources, no preemption
   - no sharing, the possession of one resource is "blocking"
   - no release of resources (all processes are waiting, can not do other actions)
-  - the definition implies that at least two processses are in a circular wait
+  - the definition implies that at least two processes are in a circular wait
 
 ## Conditions for deadlock
 
-- **Mutual exlcusion** condition
-  - each resource assigned to 1 process or is avaiable
+- **Mutual exclusion** condition
+  - each resource assigned to 1 process or is available
 - **Hold and wait** condition
   - process holding resources can request additional resources
 - **No preemption** condition
@@ -1730,7 +1730,7 @@ The problem of deadlock can be dealt with by several different techniques:
 
 ### Deadlock prevention
 
-- Deadlock avoidance is cery hard
+- Deadlock avoidance is very hard
 - Prevention considers the four conditions for deadlock and attacks them
 
 #### Attacking the mutual exclusion condition
@@ -1739,7 +1739,7 @@ The problem of deadlock can be dealt with by several different techniques:
   - however, what if two processes write to the same printer?
 - Some devices (such as printer) can be **spooled**
   - only the printer daemon uses printer resource
-  - thus deadlock for printer eliminiated
+  - thus deadlock for printer eliminated
 - not all devices can be spooled (process table)
 - does not provide 100% deadlock freedom
 
@@ -1760,7 +1760,7 @@ The problem of deadlock can be dealt with by several different techniques:
 #### Attacking the no preemption condition
 
 - Not very promising
-- some resources cannot be preemted
+- some resources cannot be preempted
 - imaging a process accessing a CD writer
   - halfway through its job
   - not forcibly take away CD writer
@@ -1773,13 +1773,13 @@ The problem of deadlock can be dealt with by several different techniques:
   - imagine a process copying a big file from tape to printer: unacceptable
 - **Global number** of all resources
   - processes can request resources whenever they want
-  - processes ma hold as many resrouces as needed
-  - but **requests** must be made **in numerical order**: <u>strong constrait</u>
+  - processes ma hold as many resources as needed
+  - but **requests** must be made **in numerical order**: <u>strong constraint</u>
 
 ![](images/attacking_circular_wait.png)
 
 - each process acquires resources in ascending order
-- the process holding the resource with the highest number associated cannot be waitingfor any other resource (before feering the ones currently held)
+- the process holding the resource with the highest number associated cannot be waiting for any other resource (before freeing the ones currently held)
 - hence that process can not be part of a circular wait
 - more in general, **there cannot be cycles in the resources graphs**, hence no deadlock can occur
 - processes will eventually finish, hence freeing their resources
@@ -1795,12 +1795,12 @@ The problem of deadlock can be dealt with by several different techniques:
 
 ### Deadlock dynamic avoidance
 
-- Based on dynamicaly managing resource allocation
+- Based on dynamically managing resource allocation
   - resources are requested one at a time
   - to avoid deadlocks, OS must decide whether it is safe or not to allocate a resource and only allocate if it is safe
-  - is tthere an lgorithm that can avoid deadlock by making the right choice?
+  - is there an algorithm that can avoid deadlock by making the right choice?
   - Yes - but certain information needs to be made available (overhead)
-  - The algorithm is based on **safe** and **un-safe states**
+  - The algorithm is based on **safe** and **unsafe states**
 
 #### Resource trajectories
 
@@ -1808,7 +1808,7 @@ The problem of deadlock can be dealt with by several different techniques:
 
 - Look at the problem in an easy to understand and graphic way first
 
-- Graphical approeach does not translate direclty into an algorithm but provides a good sense what is required
+- Graphical approach does not translate directly into an algorithm but provides a good sense what is required
 
   ![](images/resource_trajectories.png)
 
@@ -1821,7 +1821,7 @@ The problem of deadlock can be dealt with by several different techniques:
 - An **unsafe** state is not a deadlocked state
   - it is a state that **will eventually lead** to a deadlock, **if** no resources are freed
 - Safe state: **it is guaranteed** that all processes will terminate
-- Unsafe state: **it cannot be guaranteed** t hat all processes will terminate
+- Unsafe state: **it cannot be guaranteed** that all processes will terminate
 
 ![](images/deadlock_dynamic_avoidance_1.png)
 
@@ -1832,14 +1832,14 @@ The problem of deadlock can be dealt with by several different techniques:
 ![](images/deadlock_dynamic_avoidance_2.png)
 (and indeed U is also granted to D)
 
-4. D has all the needed resources, will eventually terminate and make them avaiable to C
+4. D has all the needed resources, will eventually terminate and make them available to C
 
 #### Banker's algorithm (Dijkstra)
 
 - A deadlock avoidance algorithm (see detection algorithms - later)
 - Based on a small-town banker and his dealings with customers
 - Algorithm denies or delays any resource request that leads the system to an unsafe state
-- Resources may be allocated to a process only if requested resources are less than or equal to avaiable resource; otherwise, the process waits until resources are avaiable
+- Resources may be allocated to a process only if requested resources are less than or equal to available resource; otherwise, the process waits until resources are available
 - ... when a process has obtained all the resources it needs it can terminate and must eventually free all resources
 
 ![](images/bankers_algorithm.png)
@@ -1851,7 +1851,7 @@ The problem of deadlock can be dealt with by several different techniques:
 - New users log on to a system
 - Previously available resources may vanish suddenly (break)
 - There are no guarantees on when resources will be released
-- As a consequence few system actually use banker's algortihm
+- As a consequence few system actually use banker's algorithm
 
 ### Starvation
 
@@ -1877,7 +1877,7 @@ The problem of deadlock can be dealt with by several different techniques:
 
 #### ... with multiple resources
 
-- Matrix based algortihm, n processes, m resources
+- Matrix based algorithm, n processes, m resources
 - A resource is either allocated or is available
 
 ![](images/detection_and_recovery_mutiple_resources.png)
@@ -1888,7 +1888,7 @@ The problem of deadlock can be dealt with by several different techniques:
 
 #### Deadlock detection algorithm
 
-- The algorithm finds a process where the request for resources can be met. It then assumes it runs to completion, and so realeses all its resources making them available.
+- The algorithm finds a process where the request for resources can be met. It then assumes it runs to completion, and so releases all its resources making them available.
   1. Look for an unmarked process, P~i~ - for which i-th row of **R**equest matrix is less than or equal to **A**vailable
   2. If such a process is found, add the i-th row of **C**urrent allocation matrix to **A**vailable (P~i~ can acquire needed resources, terminate and make all them available), and mark the process, and then go back to step 1
   3. If no such process exists, the algorithm terminates
@@ -1912,15 +1912,15 @@ The problem of deadlock can be dealt with by several different techniques:
   - Rollback
     - What to do with the victim? Kill it or 'rollback' to a saved state
   - Starvation
-    - Resources may be pre-empted by always the same process
+    - Resources may be preempted by always the same process
     - Processes may be picked only a finite number of times
 
 ##### through rollback
 
-- **checkpoint** a process peridocially, save state
+- **checkpoint** a process periodically, save state
 - state should contain memory image and status of resources
 - use this saved state
-- **restart** the rocess if it is found deadlocked with the state of the last checkpoint
+- **restart** the process if it is found deadlocked with the state of the last checkpoint
 - work since the used checkpoint is lost
 - process has to wait to re-acquire the resource
 
@@ -1934,7 +1934,7 @@ The problem of deadlock can be dealt with by several different techniques:
   - very expensive, all processes need to re-run
 - **Kill one** process at a time
   - choose process that can be re-run from the beginning
-  - Incurs overhead, after a process is aborted the eadlock detection algortihm needs to be run again
+  - Incurs overhead, after a process is aborted the deadlock detection algorithm needs to be run again
 - the other processes get the resources of the killed process
 - select processes for termination
   - What is the **priority** of the process?
