@@ -1610,3 +1610,354 @@ monitor Monitor-name
 - Producer will be blocked if there are no empty messages waiting
 - Consumer blocks if there are no filled messages waiting
 - Zero buffer option possible
+
+# Deadlocks
+
+## Introduction to deadlocks
+
+- Previously we discovered examples of deadlocks
+  - semaphore
+  - java synchronisation
+- deadlocks are associated with acquiring a resource
+- resources
+  - are often non-sharable: can be used by one process at a time
+- can be both hardware and software
+- examples
+  - network interfaces
+  - printers
+  - system tables
+  - database entries
+  - memory locations
+- Processes need to acquire resources in reasonable order
+  - processes sometimes require more than one resource
+  - order in which the resources are allocated is important
+- A process holds resource **A** and requests resource **B**
+  - another process hold resource **B** & requests resource **A**
+  - both processes are blocked and remain so forever
+- Deadlocks can occur across machines
+  - shared devices between a number of machines
+  - printers, scanners, cd recorders
+  - resources can be reserved remotely
+
+## Resources
+
+- Deadlocks can occur if processes have been granted exclusive access to resources
+  - a system contains many resources
+  - number of instances of the same type (printers)
+- Deadlocks can involve any number of processes and resources
+
+### Non-preemtable resources
+
+- Preemption may cause the process to fail
+  - Example: CD burner, if started to burn and taken away and given to another process -> garbage in the CD
+- Generally deadlocks involve non-preemtable resources
+- Potential deadlocks with preemtable resources can be avoided by reallocating the resources
+
+### Resource usage
+
+- Sequence of events to use a resource
+  - request a resource
+  - use the resource
+  - release the resource
+- If a resource is not available when requested the process is **forced to wait**
+- Use some **synchronisation mechanisms**
+  - semaphore, monitors, etc
+- Processes may need more than one resource -> the **order** for acquiring resources may be relevant
+
+![](images/deadlock_semaphore.png)
+
+## Definition of deadlock
+
+- Formal definition: *A set of processes is deadlocked if each process in the set is waiting for an event that only another process in the set can cause.*
+- Usually the event is the release of a currently held resource
+- It is a permanent condition, none of the processes can:
+  - run
+  - release resources
+  - be awakened
+- Number of resources and processes is unimportant
+- Kind of resources is unimportant
+- it implies, informally speaking the four conditions:
+  - only processes in the set can release resources, no preemption
+  - no sharing, the possession of one resource is "blocking"
+  - no release of resources (all processes are waiting, can not do other actions)
+  - the definition implies that at least two processses are in a circular wait
+
+## Conditions for deadlock
+
+- **Mutual exlcusion** condition
+  - each resource assigned to 1 process or is avaiable
+- **Hold and wait** condition
+  - process holding resources can request additional resources
+- **No preemption** condition
+  - previously granted resources cannot forcibly taken away
+- **Circular wait** condition
+  - must be circular chain of 2 or more processes
+  - each is waiting for resource held by next member of the chain
+- **All 4 conditions** need to be met for deadlocks to occur
+- Conditions can be modelled using graphs
+
+## Modelling deadlock
+
+- Graphs have two kind of nodes: processes (circles) and resources (squares)
+- An arc from a resource to a process means the resource as previously been assigned (*a*)
+- And arc from a process to a resource means the process is requesting this resource (currently blocked) (*b*)
+- A cycle means deadlock (*c*)
+
+![](images/deadlock_graph_modelling.png)
+
+## Ways of dealing with deadlock
+
+The problem of deadlock can be dealt with by several different techniques:
+
+1. **Ostrich algorithm**: ignore the problem. maybe if you ignore it, it will ignore you
+2. **Prevention**: by negating one of the four conditions necessary for deadlocks to occur. (**BEFORE**)
+3. **Dynamic avoidance**: by careful resource allocation (**MEANWHILE**)
+4. **Detection and recovery**: allow deadlocks to occur, detect them and take some action (**AFTER**)
+
+### The ostrich algorithms
+
+- Pretend there is no problem
+  i.e. do not put in place any strategy, control, it will happen rarely, in case "restart"
+- Mathematicians vs engineers
+- Reasonable if
+  - deadlocks occur very rarely
+  - cost of prevention is high
+  - no huge consequences if deadlock occurs
+- It is a trade-off between
+  - convenience
+  - correctness
+- UNIX and Windows takes this approach
+
+### Deadlock prevention
+
+- Deadlock avoidance is cery hard
+- Prevention considers the four conditions for deadlock and attacks them
+
+#### Attacking the mutual exclusion condition
+
+- if no resource would ever be exclusively assigned to any process, no deadlock would be possible
+  - however, what if two processes write to the same printer?
+- Some devices (such as printer) can be **spooled**
+  - only the printer daemon uses printer resource
+  - thus deadlock for printer eliminiated
+- not all devices can be spooled (process table)
+- does not provide 100% deadlock freedom
+
+#### Attacking the hold and wait condition
+
+- Require processes to **request all resources before starting execution**
+  - all resources are assigned at the beginning
+  - a process never has to wait for what it needs
+  - processes always run to completion and release resources
+- Problems
+  - processes may not know required resources at start of run
+  - ties up resources other processes could be using
+  - not optimal use of resources
+- Variation
+  - processes must give up all resources before acquiring a new one
+  - then request all immediately needed resources again
+
+#### Attacking the no preemption condition
+
+- Not very promising
+- some resources cannot be preemted
+- imaging a process accessing a CD writer
+  - halfway through its job
+  - not forcibly take away CD writer
+
+#### Attacking the circular wait condition
+
+- Several ways of attacking possible
+- A process is only entitled to a single resource
+  - if a second resource is needed, the first resource has to be freed
+  - imagine a process copying a big file from tape to printer: unacceptable
+- **Global number** of all resources
+  - processes can request resources whenever they want
+  - processes ma hold as many resrouces as needed
+  - but **requests** must be made **in numerical order**: <u>strong constrait</u>
+
+![](images/attacking_circular_wait.png)
+
+- each process acquires resources in ascending order
+- the process holding the resource with the highest number associated cannot be waitingfor any other resource (before feering the ones currently held)
+- hence that process can not be part of a circular wait
+- more in general, **there cannot be cycles in the resources graphs**, hence no deadlock can occur
+- processes will eventually finish, hence freeing their resources
+
+#### Summary of deadlock prevention
+
+|    Condition     |            Approach             |
+| :--------------: | :-----------------------------: |
+| Mutual exclusion |        Spool everything         |
+|  Hold and wait   | Request all resources initially |
+|  No preemption   |       Take resources away       |
+|  Circular wait   |   Order resources numerically   |
+
+### Deadlock dynamic avoidance
+
+- Based on dynamicaly managing resource allocation
+  - resources are requested one at a time
+  - to avoid deadlocks, OS must decide whether it is safe or not to allocate a resource and only allocate if it is safe
+  - is tthere an lgorithm that can avoid deadlock by making the right choice?
+  - Yes - but certain information needs to be made available (overhead)
+  - The algorithm is based on **safe** and **un-safe states**
+
+#### Resource trajectories
+
+- Algorithm is based on safe states
+
+- Look at the problem in an easy to understand and graphic way first
+
+- Graphical approeach does not translate direclty into an algorithm but provides a good sense what is required
+
+  ![](images/resource_trajectories.png)
+
+#### Safe and unsafe states
+
+- Based on the same resource matrixes used for the detection algorithm (more later)
+- State is **safe** is
+  - it is not deadlocked
+  - there exists a possible sequence of resources allocations that allows each process to acquire all the needed resources, according to their maximum limit, and hence terminate and release the resources
+- An **unsafe** state is not a deadlocked state
+  - it is a state that **will eventually lead** to a deadlock, **if** no resources are freed
+- Safe state: **it is guaranteed** that all processes will terminate
+- Unsafe state: **it cannot be guaranteed** t hat all processes will terminate
+
+![](images/deadlock_dynamic_avoidance_1.png)
+
+1. Process D and C need resources U and T
+2. T is granted to D, the state is safe (as we will see in a minute)
+3. U cannot be granted to C, as the resulting state would not be safe, actually would be deadlocked as shown
+
+![](images/deadlock_dynamic_avoidance_2.png)
+(and indeed U is also granted to D)
+
+4. D has all the needed resources, will eventually terminate and make them avaiable to C
+
+#### Banker's algorithm (Dijkstra)
+
+- A deadlock avoidance algorithm (see detection algorithms - later)
+- Based on a small-town banker and his dealings with customers
+- Algorithm denies or delays any resource request that leads the system to an unsafe state
+- Resources may be allocated to a process only if requested resources are less than or equal to avaiable resource; otherwise, the process waits until resources are avaiable
+- ... when a process has obtained all the resources it needs it can terminate and must eventually free all resources
+
+![](images/bankers_algorithm.png)
+
+- D could be granted one of the two available scanner, terminate and release all possessed resources. There are not sufficient resources for A at the moment - although it could still acquire a Tape driver. If all processes are in the same state as A deadlock will occur.
+- Theory is wonderful, however
+- Processes rarely know their **maximum number of resources** in advance
+- Number of processes in the system is not fixed but **dynamically changes** over time
+- New users log on to a system
+- Previously available resources may vanish suddenly (break)
+- There are no guarantees on when resources will be released
+- As a consequence few system actually use banker's algortihm
+
+### Starvation
+
+- Algorithm to allocate a resource
+  - may be to give to shortest job first
+- Works great for multiple short jobs in a system
+- May cause long job to be postponed indefinitely
+  - Even though not blocked
+  - Solution
+  - First-come, first-serve policy
+
+### Detection and recovery
+
+- Simplest case: a system has only one resource of each type (1 printer, 1 plotter)
+- Construct a **resource graph** as discussed before
+- If the graph contains any cycles -> deadlock
+  - any process part in a cycle is deadlocked
+
+![](images/deadlock_detection_and_recovery.png)
+
+- Simple to detect deadlocks in a graph (polynomial)
+- However, formal algorithm required for actual implementation -> much more complex
+
+#### ... with multiple resources
+
+- Matrix based algortihm, n processes, m resources
+- A resource is either allocated or is available
+
+![](images/detection_and_recovery_mutiple_resources.png)
+
+![](images/detection_and_recovery_mutiple_resources_2.png)
+
+- What if process 3 also requires a resource D?
+
+#### Deadlock detection algorithm
+
+- The algorithm finds a process where the request for resources can be met. It then assumes it runs to completion, and so realeses all its resources making them available.
+  1. Look for an unmarked process, P~i~ - for which i-th row of **R**equest matrix is less than or equal to **A**vailable
+  2. If such a process is found, add the i-th row of **C**urrent allocation matrix to **A**vailable (P~i~ can acquire needed resources, terminate and make all them available), and mark the process, and then go back to step 1
+  3. If no such process exists, the algorithm terminates
+  4. One or more unmarked rows show deadlock exists
+
+#### When to check for deadlocks?
+
+- Every time a resource request has been issued in the system -> detects deadlocks as early as possible but **very costly**
+- Check every *i* minutes
+- Check only when the CPU utilisation drops below a certain threshold (only a few processes are running)
+
+#### Recovery...
+
+#####  through pre-emption
+
+- Take a resource away from a process and assign it to another process (manual intervention may be needed)
+- issues
+  - selection of a victim
+  - order pre-emption to minimise cost
+  - Cost includes: number of resources held, time the process has already run
+  - Rollback
+    - What to do with the victim? Kill it or 'rollback' to a saved state
+  - Starvation
+    - Resources may be pre-empted by always the same process
+    - Processes may be picked only a finite number of times
+
+##### through rollback
+
+- **checkpoint** a process peridocially, save state
+- state should contain memory image and status of resources
+- use this saved state
+- **restart** the rocess if it is found deadlocked with the state of the last checkpoint
+- work since the used checkpoint is lost
+- process has to wait to re-acquire the resource
+
+##### through killing processes
+
+- crudest but simplest way to break a deadlock
+- state of some resources may be incorrect
+  - eg updating a file
+- **Kill all** processes in the deadlock
+  - certainly resolves the deadlock
+  - very expensive, all processes need to re-run
+- **Kill one** process at a time
+  - choose process that can be re-run from the beginning
+  - Incurs overhead, after a process is aborted the eadlock detection algortihm needs to be run again
+- the other processes get the resources of the killed process
+- select processes for termination
+  - What is the **priority** of the process?
+  - **How long** has the process computed, and how much longer the process will compute to finish its task?
+  - **How many** and what **resources** the processes holds (simple to pre-empty?)?
+  - **How many more** resources a process needs **to complete** computation?
+  - **How many processes** will need to be terminated?
+  - Whether the process is **interactive** or batch?
+
+### Deadlock handling summary
+
+1. Ostrich algorithm
+   - do nothing
+2. Prevention
+   1. Mutual exclusion
+   2. Hold and wait
+   3. No preemption
+   4. Circular wait
+3. Dynamic avoidance
+   - safe/unsafe states
+   - banker algorithm
+4. Detection and recovery
+   1. detection
+   2. preemption
+   3. rollback
+   4. killing processes
