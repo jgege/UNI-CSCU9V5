@@ -273,7 +273,7 @@
 
 - **Thread scheduling** and switching is lightweight
 
-  ![](/mnt/jgdata/school/uni_bsc/CSCU9V5/notes/images/threads.png)
+  ![](images/threads.png)
 
 - Basic unit of CPU utilisation
 
@@ -333,14 +333,14 @@
 
 ### Many-to-one model
 
-![](/mnt/jgdata/school/uni_bsc/CSCU9V5/notes/images/thread_model_many_to_one.png)
+![](images/thread_model_many_to_one.png)
 
 - many user-level threads mapped to single kernel thread
 - used on systems that do not support kernel threads
 
 ### One-to-one model
 
-![](/mnt/jgdata/school/uni_bsc/CSCU9V5/notes/images/thread_model_one_to_one.png)
+![](images/thread_model_one_to_one.png)
 
 - each user-level thread maps to kernel thread
 - creating a user thread requires creating a kernel thread
@@ -350,7 +350,7 @@
 
 ### Many-to-many model
 
-![](/mnt/jgdata/school/uni_bsc/CSCU9V5/notes/images/thread_model_many_to_many.png)
+![](images/thread_model_many_to_many.png)
 
 - multiplexes many user-level threads to fewer or equal kernel threads
 - examples:
@@ -459,7 +459,7 @@ public class OurApplet extends Applet implements Runnable {
 
 ### Thread states
 
-![](/mnt/jgdata/school/uni_bsc/CSCU9V5/notes/images/thread_states.png)
+![](images/thread_states.png)
 
 ### Producer-consumer problem
 
@@ -527,19 +527,19 @@ class Consumer extends Thread {
 
 ## Example
 
-![](/mnt/jgdata/school/uni_bsc/CSCU9V5/notes/images/concurrency_example_1.png)
+![](images/concurrency_example_1.png)
 
 ## Process interactions
 
 ### General classification
 
-#### One to one![](/mnt/jgdata/school/uni_bsc/CSCU9V5/notes/images/interaction_c_one_to_one.png)
+#### One to one![](images/interaction_c_one_to_one.png)
 
 - Appropriate in systems with static configurations of interactions between individual processes
 - Example:
   - pipeline in UNIX commands
 
-#### Any to one ![](/mnt/jgdata/school/uni_bsc/CSCU9V5/notes/images/interaction_c_many_to_one.png)
+#### Any to one ![](images/interaction_c_many_to_one.png)
 
 - Multiple clients interact with a single server
 - Clients invoke a well known server
@@ -549,13 +549,13 @@ class Consumer extends Thread {
   - Mail server + client
   - Web server + client
 
-#### Any to (one of) many ![](/mnt/jgdata/school/uni_bsc/CSCU9V5/notes/images/interaction_c_many_to_one.png)
+#### Any to (one of) many ![](images/interaction_c_many_to_one.png)
 
 - Service offered by anonymous server processes
 - Clients requests service from any available server
 - This style usually reduces to one of the other styles
 
-#### One to (one of) many ![](/mnt/jgdata/school/uni_bsc/CSCU9V5/notes/images/interaction_c_one_to_many.png)
+#### One to (one of) many ![](images/interaction_c_one_to_many.png)
 
 - User to notify a set of interested clients
 - Broadcast (sent out to everyone)
@@ -567,7 +567,7 @@ class Consumer extends Thread {
   - Used in fault tolerant systems
 
 
-#### Many to many ![](/mnt/jgdata/school/uni_bsc/CSCU9V5/notes/images/interaction_c_many_to_many.png)
+#### Many to many ![](images/interaction_c_many_to_many.png)
 
 - Usually implemented by shared data
 - Any number of processes can interact
@@ -575,8 +575,8 @@ class Consumer extends Thread {
 
 ### Forms of process interactions
 
-- Co-operation (shared memory) ![](/mnt/jgdata/school/uni_bsc/CSCU9V5/notes/images/ipc_coop_shared_memory.png)
-- Communication (message passing) ![](/mnt/jgdata/school/uni_bsc/CSCU9V5/notes/images/ipc_comm_message_passing.png)
+- Co-operation (shared memory) ![](images/ipc_coop_shared_memory.png)
+- Communication (message passing) ![](images/ipc_comm_message_passing.png)
 
 #### Implementing IPC
 
